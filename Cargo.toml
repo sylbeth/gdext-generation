@@ -1,0 +1,9 @@
+[package]
+name = "gdext-gen"
+version = "0.1.0"
+edition = "2021"
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--document-private-items"]
+
+[dependencies]
