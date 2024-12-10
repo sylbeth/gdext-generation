@@ -16,7 +16,7 @@ impl GDExtension {
     ///
     /// * `lib_name` - Name of the library crate that is being compiled. It can be retrieved with the environmental variable: "`CARGO_PKG_NAME"`, but it must be turned into snake_case.
     /// * `windows_compiler` - Compiler used to build for `Windows`.
-    /// * `target_dir` - Path to the build folder (specified inside the variable `[build] target-dir` of `.cargo/config.toml`) relative to the project file. For example, if the path for `Godot` would be `"res://path/to/build"`, the path provided must be `"path/to/build "`. If the path contains non valid Unicode, it will be stored calling [`to_string_lossy`](Path::to_string_lossy).
+    /// * `target_dir` - Path to the build folder (specified inside the variable `[build] target-dir` of `.cargo/config.toml`) relative to the project file. For example, if the path for `Godot` would be `"res://path/to/build"`, the path provided must be `"path/to/build"`. If the path contains non valid Unicode, it will be stored calling [`to_string_lossy`](Path::to_string_lossy).
     ///
     /// # Returns
     ///
