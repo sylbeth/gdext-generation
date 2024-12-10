@@ -90,7 +90,7 @@ impl System {
     ///
     /// # Parameters
     ///
-    /// * `lib_name` - Name of the library crate that is being compiled.
+    /// * `lib_name` - Name of the library crate that is being compiled. It can be retrieved with the environmental variable: "`CARGO_PKG_NAME"`, but it must be turned into snake_case.
     ///
     /// # Returns
     ///
