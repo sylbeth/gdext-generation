@@ -48,7 +48,8 @@ impl GDExtension {
                                 target.1.get_rust_name(),
                                 target.0.get_lib_export_name(lib_name),
                             )
-                        }.into(),
+                        }
+                        .into(),
                     );
                 }
             }

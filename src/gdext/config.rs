@@ -1,7 +1,9 @@
 //! Module for the definition of the [`Configuration`] struct for the configuration section of the `.gdextension` file.
 
+use crate::args::EntrySymbol;
+
 #[allow(unused_imports)]
-use super::{GDExtension, DEFAULT_ENTRY_SYMBOL};
+use super::GDExtension;
 use serde::{Deserialize, Serialize};
 
 /// Configuration section of the `.gdextension` file.
@@ -30,35 +32,35 @@ impl Configuration {
     ///
     /// # Parameters
     ///
-    /// * `entry_symbol` - Name of the entry function for initializing the [`GDExtension`]. If the empty string (`""`) is provided, it uses its default value: [`DEFAULT_ENTRY_SYMBOL`].
+    /// * `entry_symbol` - [`EntrySymbol`] for initializing the [`GDExtension`]. It uses its `to_string` method to provide its representation.
     /// * `compatibility_minimum` - Minimum compatible version of `Godot`, with format `(major, minor)`, in case [`Some`] is provided.
     /// * `compatibility_maximum` - Maximum compatible version of `Godot`, with format `(major, minor)`, in case [`Some`] is provided.
     /// * `is_reloadable` - Whether or not to allow the reloading of the [`GDExtension`] upon recompilation.
     /// * `are_exported_by_android_aar_plugin` - Whether or not the [`GDExtension`] native shared libraries are exported by the `Android` plugin `AAR` binaries.
     ///
     /// # Returns
-    /// 
+    ///
     /// The [`Configuration`] with the necessary fields properly parsed.
     pub fn new(
-        entry_symbol: &str,
+        entry_symbol: EntrySymbol,
         compatibility_minimum: Option<(u8, u8)>,
         compatibility_maximum: Option<(u8, u8)>,
         is_reloadable: bool,
         are_exported_by_android_aar_plugin: bool,
     ) -> Self {
         Self {
-            entry_symbol: match entry_symbol {
-                "" => DEFAULT_ENTRY_SYMBOL,
-                _ => entry_symbol,
-            }
-            .to_string(),
+            entry_symbol: entry_symbol.to_string(),
             compatibility_minimum: compatibility_minimum
                 .map(|(major, minor)| format!("{}.{}", major, minor).parse().unwrap_or(4.1)),
-            compatibility_maximum: compatibility_maximum
-                .and_then(|(major, minor)| match format!("{}.{}", major, minor).parse() {
-                    Ok(com_min) => Some(com_min),
-                    _ => None,
-                }),
+            compatibility_maximum: compatibility_maximum.and_then(|(major, minor)| match format!(
+                "{}.{}",
+                major, minor
+            )
+            .parse()
+            {
+                Ok(com_min) => Some(com_min),
+                _ => None,
+            }),
             reloadable: is_reloadable.then_some(true),
             android_aar_plugin: are_exported_by_android_aar_plugin.then_some(true),
         }
@@ -75,7 +77,7 @@ impl Configuration {
     /// * `android_aar_plugin` - Whether or not the [`GDExtension`] native shared libraries are exported by the `Android` plugin `AAR` binaries in case [`Some`] is provided.
     ///
     /// # Returns
-    /// 
+    ///
     /// The [`Configuration`] with the necessary fields properly parsed.
     pub fn raw_new(
         entry_symbol: String,

@@ -10,9 +10,6 @@ use toml::Table;
 
 use self::config::Configuration;
 
-/// Name of the default entry function `godot-rust` uses for initializing the [`GDExtension`].
-pub const DEFAULT_ENTRY_SYMBOL: &str = "gdext_rust_init";
-
 /// `.gdextension` file representation.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct GDExtension {
@@ -34,7 +31,7 @@ impl GDExtension {
     /// * `configuration` - [`Configuration`] to be assigned to the [`GDExtension`].
     ///
     /// # Returns
-    /// 
+    ///
     /// The [`GDExtension`] with the [`Configuration`] assigned.
     pub fn from_config(configuration: Configuration) -> Self {
         Self {
