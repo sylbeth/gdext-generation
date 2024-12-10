@@ -34,11 +34,11 @@ impl Target {
             ),
             System::MacOS => format!("{}-apple-darwin", self.2.get_rust_name()),
             System::Web => format!("{}-unknown-emscripten", self.2.get_rust_name()),
-            System::Windows(windows_compiler) => format!(
+            System::Windows(windows_abi) => format!(
                 "{}-pc-{}-{}",
                 self.2.get_rust_name(),
                 self.0.get_name(),
-                windows_compiler.get_rust_name(),
+                windows_abi.get_rust_name(),
             ),
         }
     }

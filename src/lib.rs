@@ -4,7 +4,7 @@ pub mod args;
 pub mod features;
 pub mod gdext;
 pub mod prelude {
-    pub use super::args::WindowsCompiler;
+    pub use super::args::WindowsABI;
 }
 /// SVG representation of the default GDExtension Rust node.
 ///

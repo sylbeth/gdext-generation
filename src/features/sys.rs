@@ -1,7 +1,7 @@
 //! Module for the [`System`] a `Godot` game using `Rust GDExtension` can be compiled for.
 
 use super::arch::Architecture;
-use crate::args::WindowsCompiler;
+use crate::args::WindowsABI;
 
 /// System to compile the `Godot` game and the `Rust GDExtension` for.
 #[derive(Debug, Clone, Copy)]
@@ -17,7 +17,7 @@ pub enum System {
     /// Web browser.
     Web,
     /// Windows system.
-    Windows(WindowsCompiler),
+    Windows(WindowsABI),
 }
 
 impl System {
@@ -25,19 +25,19 @@ impl System {
     ///
     /// # Parameters
     ///
-    /// * `windows_compiler` - Compiler used to build for `Windows`.
+    /// * `windows_abi` - ABI used to build for `Windows`.
     ///
     /// # Returns
     ///
     /// An array with all available [`System`]s.
-    pub fn get_systems(windows_compiler: WindowsCompiler) -> [Self; 6] {
+    pub fn get_systems(windows_abi: WindowsABI) -> [Self; 6] {
         [
             Self::Android,
             Self::IOS,
             Self::Linux,
             Self::MacOS,
             Self::Web,
-            Self::Windows(windows_compiler),
+            Self::Windows(windows_abi),
         ]
     }
 
