@@ -12,6 +12,9 @@ impl Target {
     ///
     /// The name of the `Rust` target triple of this [`Target`].
     pub fn get_rust_target_triple(&self) -> String {
+        if self.2 == Architecture::Universal {
+            return "".into();
+        }
         match self.0 {
             System::Android => format!(
                 "{}-linux-{}{}",
