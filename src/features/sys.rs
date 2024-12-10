@@ -95,7 +95,7 @@ impl System {
     /// # Returns
     ///
     /// The name of the file that's going to be compiled.
-    pub fn get_lib_export_name(&self, lib_name: &String) -> String {
+    pub fn get_lib_export_name(&self, lib_name: &str) -> String {
         format!(
             "{}{}.{}",
             match self {
