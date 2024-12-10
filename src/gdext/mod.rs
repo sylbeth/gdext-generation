@@ -1,6 +1,7 @@
 //! Module for the definition of the structs to be serialized to build the `.gdextension` file, and the functions to generate the file.
 
 pub mod config;
+pub mod deps;
 
 use serde::{Deserialize, Serialize};
 use toml::Table;
