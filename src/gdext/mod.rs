@@ -33,6 +33,7 @@ impl GDExtension {
     /// * `configuration` - [`Configuration`] to be assigned to the [`GDExtension`].
     ///
     /// # Returns
+    /// 
     /// The [`GDExtension`] with the [`Configuration`] assigned.
     pub fn new(configuration: Configuration) -> Self {
         Self {

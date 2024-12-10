@@ -37,6 +37,7 @@ impl Configuration {
     /// * `are_exported_by_android_aar_plugin` - Whether or not the [`GDExtension`] native shared libraries are exported by the `Android` plugin `AAR` binaries.
     ///
     /// # Returns
+    /// 
     /// The [`Configuration`] with the necessary fields properly parsed.
     pub fn new(
         entry_symbol: &str,
@@ -71,6 +72,7 @@ impl Configuration {
     /// * `android_aar_plugin` - Whether or not the [`GDExtension`] native shared libraries are exported by the `Android` plugin `AAR` binaries in case [`Some`] is provided.
     ///
     /// # Returns
+    /// 
     /// The [`Configuration`] with the necessary fields properly parsed.
     pub fn raw_new(
         entry_symbol: String,
