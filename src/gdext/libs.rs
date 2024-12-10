@@ -33,6 +33,7 @@ impl GDExtension {
                     let target = Target(system, mode, architecture);
                     self.libraries.insert(
                         target.get_godot_target(),
+                        // If the Architecture is Generic, it takes the path it would be if no target was specified.
                         if target.2 == Architecture::Generic {
                             format!(
                                 "{PROJECT_FOLDER}{}",

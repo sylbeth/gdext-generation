@@ -6,7 +6,7 @@ use super::{arch::Architecture, mode::Mode, sys::System};
 pub struct Target(pub System, pub Mode, pub Architecture);
 
 impl Target {
-    /// Gets the name of the `Rust` target triple this [`Target`] would use.
+    /// Gets the name of the `Rust` target triple this [`Target`] would use if the [`Architecture`] isn't [`Generic`](Architecture::Generic).
     ///
     /// # Returns
     ///
@@ -43,7 +43,7 @@ impl Target {
         }
     }
 
-    /// Gets the name of the `Godot` target this [`Target`] would use.
+    /// Gets the name of the `Godot` target this [`Target`] would use. If the [`Target`] uses the [`Generic`](Architecture::Generic) [`Architecture`], it translates to "`system`.`mode`", otherwise, to "`system`.`mode`.`architecture`".
     ///
     /// # Returns
     ///
