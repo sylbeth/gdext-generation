@@ -7,3 +7,5 @@ edition = "2021"
 rustdoc-args = ["--document-private-items"]
 
 [dependencies]
+serde = { version = "1.0.215", features = ["serde_derive"] }
+toml = "0.8.19"

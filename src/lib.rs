@@ -2,6 +2,7 @@
 
 pub mod args;
 pub mod features;
+pub mod gdext;
 pub mod prelude {
     pub use super::args::WindowsCompiler;
 }
