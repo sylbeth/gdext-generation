@@ -15,8 +15,8 @@ pub enum Architecture {
     Rv64,
     /// The WebAssembly architecture.
     Wasm32,
-    /// MacOS universal library using [`Architecture::Arm64`] and [`Architecture::X86_64`].
-    Universal,
+    /// MacOS universal library using [`Architecture::Arm64`] and [`Architecture::X86_64`], or a generic architecture for the rest.
+    Generic,
 }
 
 impl Architecture {
@@ -33,7 +33,7 @@ impl Architecture {
             Self::Arm64 => "aarch64",
             Self::Rv64 => "riscv64gc",
             Self::Wasm32 => "wasm32",
-            Self::Universal => "",
+            Self::Generic => "",
         }
     }
 
@@ -50,7 +50,7 @@ impl Architecture {
             Self::Arm64 => "arm_64",
             Self::Rv64 => "rv_64",
             Self::Wasm32 => "wasm32",
-            Self::Universal => "",
+            Self::Generic => "",
         }
     }
 }

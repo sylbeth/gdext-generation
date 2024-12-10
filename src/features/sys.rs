@@ -13,7 +13,7 @@ pub enum System {
     /// Linux system.
     Linux,
     /// MacOS system.
-    Macos,
+    MacOS,
     /// Web browser.
     Web,
     /// Windows system.
@@ -35,7 +35,7 @@ impl System {
             Self::Android,
             Self::IOS,
             Self::Linux,
-            Self::Macos,
+            Self::MacOS,
             Self::Web,
             Self::Windows(windows_compiler),
         ]
@@ -53,19 +53,32 @@ impl System {
                 Architecture::Arm64,
                 Architecture::X86_32,
                 Architecture::X86_64,
+                Architecture::Generic,
             ],
-            Self::IOS => vec![Architecture::Arm64],
+            Self::IOS => vec![
+                Architecture::Arm64, 
+                Architecture::Generic,
+            ],
             Self::Linux => vec![
                 Architecture::Arm64,
                 Architecture::Rv64,
                 Architecture::X86_64,
+                Architecture::Generic,
             ],
-            Self::Macos => vec![Architecture::Arm64, Architecture::X86_64],
-            Self::Web => vec![Architecture::Wasm32],
+            Self::MacOS => vec![
+                Architecture::Arm64,
+                Architecture::X86_64,
+                Architecture::Generic,
+            ],
+            Self::Web => vec![
+                Architecture::Wasm32,
+                Architecture::Generic,
+            ],
             Self::Windows(_) => vec![
                 Architecture::Arm64,
                 Architecture::X86_32,
                 Architecture::X86_64,
+                Architecture::Generic,
             ],
         }
     }
@@ -80,7 +93,7 @@ impl System {
             Self::Android => "android",
             Self::IOS => "ios",
             Self::Linux => "linux",
-            Self::Macos => "macos",
+            Self::MacOS => "macos",
             Self::Web => "web",
             Self::Windows(_) => "windows",
         }
@@ -99,14 +112,14 @@ impl System {
         format!(
             "{}{}.{}",
             match self {
-                Self::IOS | Self::Linux | Self::Macos => "lib",
+                Self::IOS | Self::Linux | Self::MacOS => "lib",
                 Self::Android | Self::Windows(_) | Self::Web => "",
             },
             lib_name,
             match self {
                 Self::Android | Self::Linux => "so",
                 Self::IOS => "ios.framework",
-                Self::Macos => "dylib",
+                Self::MacOS => "dylib",
                 Self::Web => "wasm",
                 Self::Windows(_) => "dll",
             }

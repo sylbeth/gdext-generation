@@ -31,7 +31,7 @@ impl GDExtension {
                 current_dependencies.insert(
                     format!("res://{}", path.to_string_lossy()),
                     match target.0 {
-                        System::Macos => "Contents/Frameworks",
+                        System::MacOS => "Contents/Frameworks",
                         _ => "",
                     }
                     .into(),

@@ -12,7 +12,7 @@ impl Target {
     ///
     /// The name of the `Rust` target triple of this [`Target`].
     pub fn get_rust_target_triple(&self) -> String {
-        if self.2 == Architecture::Universal {
+        if self.2 == Architecture::Generic {
             return "".into();
         }
         match self.0 {
@@ -32,7 +32,7 @@ impl Target {
                 self.2.get_rust_name(),
                 self.0.get_name()
             ),
-            System::Macos => format!("{}-apple-darwin", self.2.get_rust_name()),
+            System::MacOS => format!("{}-apple-darwin", self.2.get_rust_name()),
             System::Web => format!("{}-unknown-emscripten", self.2.get_rust_name()),
             System::Windows(windows_compiler) => format!(
                 "{}-pc-{}-{}",
@@ -49,7 +49,7 @@ impl Target {
     ///
     /// The name of the `Godot` target of this [`Target`].
     pub fn get_godot_target(&self) -> String {
-        if self.2 == Architecture::Universal {
+        if self.2 == Architecture::Generic {
             format!("{}.{}", self.0.get_name(), self.1.get_godot_name())
         } else {
             format!(

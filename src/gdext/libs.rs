@@ -33,7 +33,7 @@ impl GDExtension {
                     let target = Target(system, mode, architecture);
                     self.libraries.insert(
                         target.get_godot_target(),
-                        if target.2 == Architecture::Universal {
+                        if target.2 == Architecture::Generic {
                             format!(
                                 "res://{}//{}/{}",
                                 target_dir.to_string_lossy(),
