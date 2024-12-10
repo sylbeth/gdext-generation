@@ -25,7 +25,7 @@ impl System {
     ///
     /// # Parameters
     ///
-    /// * `windows_compiler` - Compiler used to build for Windows.
+    /// * `windows_compiler` - Compiler used to build for `Windows`.
     ///
     /// # Returns
     ///
