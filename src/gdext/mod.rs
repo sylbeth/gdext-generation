@@ -2,6 +2,7 @@
 
 pub mod config;
 pub mod deps;
+pub mod libs;
 
 use serde::{Deserialize, Serialize};
 use toml::Table;
