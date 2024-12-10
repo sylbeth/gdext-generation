@@ -55,10 +55,7 @@ impl System {
                 Architecture::X86_64,
                 Architecture::Generic,
             ],
-            Self::IOS => vec![
-                Architecture::Arm64, 
-                Architecture::Generic,
-            ],
+            Self::IOS => vec![Architecture::Arm64, Architecture::Generic],
             Self::Linux => vec![
                 Architecture::Arm64,
                 Architecture::Rv64,
@@ -70,10 +67,7 @@ impl System {
                 Architecture::X86_64,
                 Architecture::Generic,
             ],
-            Self::Web => vec![
-                Architecture::Wasm32,
-                Architecture::Generic,
-            ],
+            Self::Web => vec![Architecture::Wasm32, Architecture::Generic],
             Self::Windows(_) => vec![
                 Architecture::Arm64,
                 Architecture::X86_32,
