@@ -16,9 +16,9 @@ pub struct Configuration {
     /// ```
     entry_symbol: String,
     /// Minimum compatible version of `Godot`. This prevents older versions of `Godot` from loading [`GDExtension`]s that depend on features from newer versions of `Godot`. It's formatted as follows: `<major>.<minor>`.
-    compatibility_minimum: Option<String>,
+    compatibility_minimum: Option<f64>,
     /// Maximum compatible version of `Godot`. This prevents newer versions of `Godot` from loading the [`GDExtension`]. It's formatted as follows: `<major>.<minor>`.
-    compatibility_maximum: Option<String>,
+    compatibility_maximum: Option<f64>,
     /// Whether or not to allow the reloading of the [`GDExtension`] upon recompilation. Supported only for `Godot 4.2` and later. Meant generally for development and debug purposes, and it can fail, it always is safer to close and reopen the engine, but it's a good quality of life feature in general.
     reloadable: Option<bool>,
     /// The [`GDExtension`] is part of a `v2 Android` plugin. During export this flag will indicate to the editor that the [`GDExtension`] native shared libraries are exported by the `Android` plugin `AAR` binaries.
@@ -53,9 +53,12 @@ impl Configuration {
             }
             .to_string(),
             compatibility_minimum: compatibility_minimum
-                .map(|(major, minor)| format!("{}.{}", major, minor)),
+                .map(|(major, minor)| format!("{}.{}", major, minor).parse().unwrap_or(4.1)),
             compatibility_maximum: compatibility_maximum
-                .map(|(major, minor)| format!("{}.{}", major, minor)),
+                .and_then(|(major, minor)| match format!("{}.{}", major, minor).parse() {
+                    Ok(com_min) => Some(com_min),
+                    _ => None,
+                }),
             reloadable: is_reloadable.then_some(true),
             android_aar_plugin: are_exported_by_android_aar_plugin.then_some(true),
         }
@@ -66,8 +69,8 @@ impl Configuration {
     /// # Parameters
     ///
     /// * `entry_symbol` - Name of the entry function for initializing the [`GDExtension`].
-    /// * `compatibility_minimum` - Minimum compatible version of `Godot`, with format `"major.minor"`, in case [`Some`] is provided.
-    /// * `compatibility_maximum` - Maximum compatible version of `Godot`, with format `"major.minor"`, in case [`Some`] is provided.
+    /// * `compatibility_minimum` - Minimum compatible version of `Godot`, with format `major.minor`, in case [`Some`] is provided.
+    /// * `compatibility_maximum` - Maximum compatible version of `Godot`, with format `major.minor`, in case [`Some`] is provided.
     /// * `reloadable` - Whether or not to allow the reloading of the [`GDExtension`] upon recompilation, in case [`Some`] is provided.
     /// * `android_aar_plugin` - Whether or not the [`GDExtension`] native shared libraries are exported by the `Android` plugin `AAR` binaries in case [`Some`] is provided.
     ///
@@ -76,8 +79,8 @@ impl Configuration {
     /// The [`Configuration`] with the necessary fields properly parsed.
     pub fn raw_new(
         entry_symbol: String,
-        compatibility_minimum: Option<String>,
-        compatibility_maximum: Option<String>,
+        compatibility_minimum: Option<f64>,
+        compatibility_maximum: Option<f64>,
         reloadable: Option<bool>,
         android_aar_plugin: Option<bool>,
     ) -> Self {
