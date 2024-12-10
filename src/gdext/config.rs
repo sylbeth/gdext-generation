@@ -11,7 +11,7 @@ pub struct Configuration {
     /// # Examples
     /// In lib.rs:
     /// ```
-    /// #[gdextension(entry_symbol = mylib_rust_init)]
+    /// #[gdextension(entry_symbol = libmy_rust_init)]
     /// unsafe impl ExtensionLibrary for MyExtension {}
     /// ```
     entry_symbol: String,
