@@ -2,6 +2,7 @@
 
 pub mod config;
 pub mod deps;
+pub mod icons;
 pub mod libs;
 
 use serde::{Deserialize, Serialize};
@@ -35,7 +36,7 @@ impl GDExtension {
     /// # Returns
     /// 
     /// The [`GDExtension`] with the [`Configuration`] assigned.
-    pub fn new(configuration: Configuration) -> Self {
+    pub fn from_config(configuration: Configuration) -> Self {
         Self {
             configuration,
             libraries: Table::new(),
