@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use super::GDExtension;
 use crate::{
     args::WindowsABI,
-    features::{arch::Architecture, mode::Mode, sys::System, target::Target},
+    features::{arch::Architecture, mode::Mode, sys::System, target::Target}, PROJECT_FOLDER,
 };
 
 impl GDExtension {
@@ -35,18 +35,16 @@ impl GDExtension {
                         target.get_godot_target(),
                         if target.2 == Architecture::Generic {
                             format!(
-                                "res://{}/{}/{}",
-                                target_dir.to_string_lossy(),
-                                target.1.get_rust_name(),
-                                target.0.get_lib_export_name(lib_name),
+                                "{PROJECT_FOLDER}{}",
+                                target_dir.join(target.1.get_rust_name()).join(target.0.get_lib_export_name(lib_name)).to_string_lossy()
                             )
                         } else {
                             format!(
-                                "res://{}/{}/{}/{}",
-                                target_dir.to_string_lossy(),
-                                target.get_rust_target_triple(),
-                                target.1.get_rust_name(),
-                                target.0.get_lib_export_name(lib_name),
+                                "{PROJECT_FOLDER}{}",
+                                target_dir.join(
+                                target.get_rust_target_triple()).join(
+                                target.1.get_rust_name()).join(
+                                target.0.get_lib_export_name(lib_name)).to_string_lossy()
                             )
                         }
                         .into(),

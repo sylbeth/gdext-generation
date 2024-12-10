@@ -9,7 +9,7 @@ use std::{
 use toml::Table;
 
 use super::GDExtension;
-use crate::features::{sys::System, target::Target};
+use crate::{features::{sys::System, target::Target}, PROJECT_FOLDER};
 
 impl GDExtension {
     /// Generates the dependencies section of the [`GDExtension`].
@@ -29,7 +29,7 @@ impl GDExtension {
             let mut current_dependencies = Table::new();
             for path in paths {
                 current_dependencies.insert(
-                    format!("res://{}", path.to_string_lossy()),
+                    format!("{PROJECT_FOLDER}{}", path.to_string_lossy()),
                     match target.0 {
                         System::MacOS => "Contents/Frameworks",
                         _ => "",
