@@ -1,27 +1,27 @@
 //! Module with the structs and enums needed to call the main function of the library.
 
-/// Compiler used to build the `Rust GDExtension` for `Windows`.
+/// ABI used to build the `Rust GDExtension` for `Windows`.
 #[derive(Debug, Clone, Copy)]
-pub enum WindowsCompiler {
+pub enum WindowsABI {
     /// Microsoft Visual C++ compiler.
     MSVC,
-    /// The MinGW compiler (MSYS2 port of GCC).
+    /// The `MinGW` compiler (`MSYS2` port of `GCC`).
     MinGW,
-    /// The Clang compiler (LLVM drop-in for GCC).
-    Clang,
+    /// Similar to `MinGW` but using `UCRT` as the runtime and various `LLVM` tools/libraries instead of `GCC/Binutils`. More information: https://doc.rust-lang.org/rustc/platform-support/pc-windows-gnullvm.html
+    LLVM,
 }
 
-impl WindowsCompiler {
-    /// Gets the name of the [`WindowsCompiler`] used in `Rust` target triples.
+impl WindowsABI {
+    /// Gets the name of the [`WindowsABI`] used in `Rust` target triples.
     ///
     /// # Returns
     ///
-    /// The name of the [`WindowsCompiler`] for the `Rust` target triple.
+    /// The name of the [`WindowsABI`] for the `Rust` target triple.
     pub fn get_rust_name(&self) -> &'static str {
         match self {
             Self::MSVC => "msvc",
             Self::MinGW => "gnu",
-            Self::Clang => "gnullvm",
+            Self::LLVM => "gnullvm",
         }
     }
 }
