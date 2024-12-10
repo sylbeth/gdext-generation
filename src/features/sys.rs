@@ -106,6 +106,7 @@ impl System {
         format!(
             "{}{}.{}",
             match self {
+                // The `godot-rust` book has android libraries without the lib in front, but it may be an error.
                 Self::IOS | Self::Linux | Self::MacOS => "lib",
                 Self::Android | Self::Windows(_) | Self::Web => "",
             },
