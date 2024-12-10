@@ -35,7 +35,7 @@ impl GDExtension {
                         target.get_godot_target(),
                         if target.2 == Architecture::Generic {
                             format!(
-                                "res://{}//{}/{}",
+                                "res://{}/{}/{}",
                                 target_dir.to_string_lossy(),
                                 target.1.get_rust_name(),
                                 target.0.get_lib_export_name(lib_name),
