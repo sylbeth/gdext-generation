@@ -15,5 +15,5 @@ pub mod prelude {
 /// [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)
 const NODE_RUST: &str = include_str!("assets/NodeRust.svg");
 
-/// The representation of a path relative to the `Godot` project folder.
+/// The representation of a path **relative** to the `Godot` project folder.
 const PROJECT_FOLDER: &str = "res://";
