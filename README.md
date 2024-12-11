@@ -5,6 +5,35 @@ This crate aims to provide a way to autogenerate a `.gdextension` file for using
 
 To install this crate as a build dependency in your own crate, run: `cargo add --build gdext-gen`. If you instead want it added as a normal dependency run: `cargo add gdext-gen`.
 
+# Usage
+
+To get all the functionality of this crate, in your `build.rs` file on the root of your crate (not your `src/`), write the following:
+
+```rust
+use gdext_gen::generate_gdextension_file;
+
+fn main() {
+    // All your variable initialization and setup goes here.
+    generate_gdextension_file(target_dir, gdextension_path, configuration, windows_abi, icons_configuration, dependencies);
+}
+```
+
+The parameters of this function and how it works are documented in the docs. It should be kept in mind that this function returns an `std::io::Result`, so the following code could be used instead:
+
+```rust
+use std::io::Result;
+use gdext_gen::generate_gdextension_file;
+
+fn main() -> Result<()> {
+    // All your variable initialization and setup goes here.
+    generate_gdextension_file(target_dir, gdextension_path, configuration, windows_abi, icons_configuration, dependencies)?;
+}
+```
+
+To compile for `Android`, `Web`, `MacOS` or `iOS` please refer to the [`godot-rust` book](https://godot-rust.github.io/book/toolchain/index.html).
+
+It's worth noting that one can configure when the build script will be run, so it's sensible to change it were one not to need it running at every source file change.
+
 # Acknowledgements
 
 * This crate is based on the [`gdextension_file` documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_file.html) from [`Godot`](https://godotengine.org/), and some snippets of the documentation are taken as are from their documentation, so they are as accurate as possible. The copyright notices for those files can be found directly in their [repository](https://github.com/godotengine/godot/blob/master/COPYRIGHT.txt), and are licensed under the [`CC BY 3.0`](https://creativecommons.org/licenses/by/3.0/) license. This applies to the doc comments on the serializable structs, so these are not relicensed under the licenses of this repository. The schema for the `.gdextension` file comes from the `Godot Engine` which is licensed under the [`MIT`](https://github.com/godotengine/godot/blob/master/LICENSE.txt) license.
