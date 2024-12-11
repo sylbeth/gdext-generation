@@ -11,7 +11,7 @@ use std::{
 use args::{EntrySymbol, IconsConfig, WindowsABI};
 use features::target::Target;
 use gdext::{config::Configuration, GDExtension};
-use toml_edit::DocumentMut;
+use toml_edit::{table as toml_table, value as toml_value, DocumentMut};
 
 pub mod args;
 pub mod features;
@@ -95,14 +95,34 @@ pub fn generate_gdextension_file(
         gdextension.generate_icons(icons_configuration)?;
     }
 
-    if let Some(dependencies) = dependencies {
-        gdextension.generate_deps(dependencies);
-    }
-
     // A TOML Error gets associated with the InvalidData IO ErrorKind.
-    let toml_document = match toml::to_string_pretty(&gdextension) {
+    let mut toml_string = match toml::to_string_pretty(&gdextension) {
         Ok(toml) => toml,
         Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
+    };
+
+    if let Some(dependencies) = dependencies {
+        let mut toml_document = toml_string
+            .parse::<DocumentMut>()
+            .expect("Invalid toml that was just parsed.");
+
+        toml_document["dependencies"] = toml_table();
+
+        for (target, dependencies) in GDExtension::generate_deps(dependencies) {
+            toml_document["dependencies"][target] = toml_value(dependencies);
+        }
+
+        toml_document["dependencies"]
+            .as_table_like_mut()
+            .expect("The dependencies are a table, it should be tablelike.")
+            .sort_values();
+
+        // Newline after sections.
+        /*for (_, table) in toml_document.iter_mut() {
+            table.as_table_mut().unwrap().decor_mut().set_suffix("\n");
+        }*/
+
+        toml_string = toml_document.to_string();
     }
 
     File::create(gdextension_path)?.write(toml_string.as_bytes())?;

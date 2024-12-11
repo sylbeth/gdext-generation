@@ -19,8 +19,11 @@ pub struct GDExtension {
     libraries: Table,
     /// Icons section of the `.gdextension` file. Links the [`GDExtension`] classes to the files to use as their editor icons. It contains relationships of `ClassName: IconPath`.
     icons: Option<Table>,
+    // The dependencies section is not needed anymore since it's parsed through toml_edit.
+    /*
     /// Dependencies section of the `.gdextension` file. It contains tables with key `running_system.build_mode`, whose entries are `GDExtensionCdylibPath: dependency`.
     dependencies: Option<Table>,
+    */
 }
 
 impl GDExtension {
@@ -38,7 +41,7 @@ impl GDExtension {
             configuration,
             libraries: Table::new(),
             icons: None,
-            dependencies: None,
+            //dependencies: None,
         }
     }
 }
