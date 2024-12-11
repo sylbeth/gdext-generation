@@ -42,6 +42,7 @@ impl GDExtension {
                                     .join(target.1.get_rust_name())
                                     .join(target.0.get_lib_export_name(lib_name))
                                     .to_string_lossy()
+                                    .replace('\\', "/")
                             )
                         } else {
                             format!(
@@ -51,6 +52,7 @@ impl GDExtension {
                                     .join(target.1.get_rust_name())
                                     .join(target.0.get_lib_export_name(lib_name))
                                     .to_string_lossy()
+                                    .replace('\\', "/")
                             )
                         }
                         .into(),

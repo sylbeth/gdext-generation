@@ -32,7 +32,10 @@ impl GDExtension {
             let mut current_dependencies = Table::new();
             for path in paths {
                 current_dependencies.insert(
-                    format!("{PROJECT_FOLDER}{}", path.to_string_lossy()),
+                    format!(
+                        "{PROJECT_FOLDER}{}",
+                        path.to_string_lossy().replace('\\', "/")
+                    ),
                     match target.0 {
                         System::MacOS => "Contents/Frameworks",
                         _ => "",

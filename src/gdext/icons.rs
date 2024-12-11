@@ -36,6 +36,7 @@ impl GDExtension {
                             .join(&icons_config.directories.editor_directory)
                             .join(&icon)
                             .to_string_lossy()
+                            .replace('\\', "/")
                     )
                     .into(),
                 );
@@ -52,6 +53,7 @@ impl GDExtension {
                             .join(&icons_config.directories.custom_directory)
                             .join(icon)
                             .to_string_lossy()
+                            .replace('\\', "/")
                     )
                     .into(),
                 );
