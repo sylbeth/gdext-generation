@@ -66,6 +66,7 @@ impl ToString for EntrySymbol {
 
 /// Node icon to use as the default node when none are specified.
 #[derive(Default, Debug, Clone)]
+#[cfg(feature = "icons")]
 pub enum DefaultNodeIcon {
     /// When using a custom icon. The path used is relative to the base directory for icons.
     Custom(PathBuf),
@@ -80,6 +81,7 @@ pub enum DefaultNodeIcon {
 
 /// How to copy the files needed for the icons to be displayed.
 #[derive(Debug, Default)]
+#[cfg(feature = "icons")]
 pub struct IconsCopyStrategy {
     /// Whether or not to copy the NodeRust.svg file.
     pub copy_node_rust: bool,
@@ -89,6 +91,7 @@ pub struct IconsCopyStrategy {
     pub force_copy: bool,
 }
 
+#[cfg(feature = "icons")]
 impl IconsCopyStrategy {
     /// Creates a new instance of [`IconsCopyStrategy`], by giving it all its fields.
     ///
@@ -145,6 +148,7 @@ impl IconsCopyStrategy {
 
 /// The **relative** paths of the directories where the icons are stored. They will be stored with [`to_string_lossy`](Path::to_string_lossy), so the directories must be composed of Unicode characters.
 #[derive(Debug)]
+#[cfg(feature = "icons")]
 pub struct IconsDirectories {
     /// The path to the folder **relative** to `res://` where all the icons are stored. Defaults to the "addons" folder.
     pub base_directory: PathBuf,
@@ -154,6 +158,7 @@ pub struct IconsDirectories {
     pub custom_directory: PathBuf,
 }
 
+#[cfg(feature = "icons")]
 impl Default for IconsDirectories {
     fn default() -> Self {
         Self {
@@ -166,6 +171,7 @@ impl Default for IconsDirectories {
     }
 }
 
+#[cfg(feature = "icons")]
 impl IconsDirectories {
     /// Creates a new instance of [`IconsDirectories`], by giving it all its fields.
     ///
@@ -193,6 +199,7 @@ impl IconsDirectories {
 
 /// The icon configuration for the `.gdextension` file generation.
 #[derive(Default, Debug)]
+#[cfg(feature = "icons")]
 pub struct IconsConfig {
     /// The default icon to use when no specified icon was provided.
     pub default: DefaultNodeIcon,
@@ -204,6 +211,7 @@ pub struct IconsConfig {
     pub directories: IconsDirectories,
 }
 
+#[cfg(feature = "icons")]
 impl IconsConfig {
     /// Creates a new instance of [`IconsConfig`], by giving it all its fields.
     ///

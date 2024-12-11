@@ -1,32 +1,41 @@
 //! Library that aims to provide a way to autogenerate a `.gdextension` file for using `Rust` to make a `Godot` `GDExtension`. It provides all the libraries pathfinding and a way to automatically link the default icons to the new defined classes based on the class they inherit from, and also a way to manually link a specific class with a custom icon.
 
 use std::{
-    collections::HashMap,
     env::var,
     fs::File,
     io::{Error, ErrorKind, Result, Write},
     path::PathBuf,
 };
 
-use args::{EntrySymbol, IconsConfig, WindowsABI};
-use features::target::Target;
+use args::{EntrySymbol, WindowsABI};
 use gdext::{config::Configuration, GDExtension};
+
+#[cfg(feature = "dependencies")]
+use features::target::Target;
+#[cfg(feature = "dependencies")]
+use std::collections::HashMap;
+#[cfg(feature = "dependencies")]
 use toml_edit::{table as toml_table, value as toml_value, DocumentMut};
+
+#[cfg(feature = "icons")]
+use args::IconsConfig;
 
 pub mod args;
 pub mod features;
 pub mod gdext;
 pub mod prelude {
+    #[cfg(feature = "icons")]
+    pub use super::args::{DefaultNodeIcon, IconsConfig, IconsCopyStrategy, IconsDirectories};
     pub use super::{
-        args::{
-            DefaultNodeIcon, EntrySymbol, IconsConfig, IconsCopyStrategy, IconsDirectories,
-            WindowsABI,
-        },
+        args::{EntrySymbol, WindowsABI},
         features::{arch::Architecture, mode::Mode, sys::System, target::Target},
         gdext::config::Configuration,
         generate_gdextension_file,
     };
 }
+
+/// The representation of a path **relative** to the `Godot` project folder.
+const PROJECT_FOLDER: &str = "res://";
 
 /// SVG representation of the default GDExtension Rust node.
 ///
@@ -35,10 +44,8 @@ pub mod prelude {
 ///
 /// # License
 /// [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)
+#[cfg(feature = "icons")]
 const NODE_RUST: &str = include_str!("assets/NodeRust.svg");
-
-/// The representation of a path **relative** to the `Godot` project folder.
-const PROJECT_FOLDER: &str = "res://";
 
 /// Generates the `.gdextension` file for the crate using all the necessary information.
 ///
@@ -48,8 +55,8 @@ const PROJECT_FOLDER: &str = "res://";
 /// * `gdextension_path` - Path where the `.gdextension` file will be written in, **relative** to the *crate folder*. If [`None`] is provided, defaults to `"../godot/rust.gdextension"`, the path provided in the `godot-rust` book.
 /// * `configuration` - [`Configuration`] section of the `.gdextension` file. If [`None`] is provided, defaults to the one found in the `godot-rust` book.
 /// * `windows_abi` - `ABI` used when compiling the crate for `Windows`. If [`None`] is provided, defaults to [`MSVC`](WindowsABI::MSVC), the default for `Rust` in `Windows`.
-/// * `icons_configuration` - Configuration for the generation of the icon section of the `.gdextension` file. If [`None`] is provided, it doesn't generate the icons section.
-/// * `dependencies` - Configuration for the generation of the dependencies section of the `.gdextension` file, comprised of the targets that have dependencies and the paths (**relative** to the *`Godot` project folder*) of all the dependencies. If [`None`] is provided, it doesn't generate the dependencies section.
+/// * `icons_configuration` - Configuration for the generation of the icon section of the `.gdextension` file. If [`None`] is provided, it doesn't generate the icons section. Available with feature "icons".
+/// * `dependencies` - Configuration for the generation of the dependencies section of the `.gdextension` file, comprised of the targets that have dependencies and the paths (**relative** to the *`Godot` project folder*) of all the dependencies. If [`None`] is provided, it doesn't generate the dependencies section. Available with feature "dependencies".
 ///
 /// # Returns
 /// * [`Ok`] - If the generation was successful and no IO errors or TOML errors happened.
@@ -59,8 +66,8 @@ pub fn generate_gdextension_file(
     gdextension_path: Option<PathBuf>,
     configuration: Option<Configuration>,
     windows_abi: Option<WindowsABI>,
-    icons_configuration: Option<IconsConfig>,
-    dependencies: Option<HashMap<Target, Vec<PathBuf>>>,
+    #[cfg(feature = "icons")] icons_configuration: Option<IconsConfig>,
+    #[cfg(feature = "dependencies")] dependencies: Option<HashMap<Target, Vec<PathBuf>>>,
 ) -> Result<()> {
     // Default values for the parameters.
 
@@ -91,16 +98,19 @@ pub fn generate_gdextension_file(
 
     gdextension.generate_libs(lib_name.as_str(), windows_abi, target_dir);
 
+    #[cfg(feature = "icons")]
     if let Some(icons_configuration) = icons_configuration {
         gdextension.generate_icons(icons_configuration)?;
     }
 
     // A TOML Error gets associated with the InvalidData IO ErrorKind.
+    #[allow(unused_mut)]
     let mut toml_string = match toml::to_string_pretty(&gdextension) {
         Ok(toml) => toml,
         Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
     };
 
+    #[cfg(feature = "dependencies")]
     if let Some(dependencies) = dependencies {
         let mut toml_document = toml_string
             .parse::<DocumentMut>()

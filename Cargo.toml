@@ -8,5 +8,10 @@ rustdoc-args = ["--document-private-items"]
 
 [dependencies]
 serde = { version = "1.0.215", features = ["serde_derive"] }
-toml_edit = "0.22.22"
 toml = { version = "0.8.19", features = ["indexmap", "preserve_order"] }
+toml_edit = { version = "0.22.22", optional = true }
+
+[features]
+default = ["icons"]
+icons = []
+dependencies = ["dep:toml_edit"]
