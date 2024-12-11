@@ -1,6 +1,7 @@
 //! Module with the structs and enums needed to call the main function of the library.
 
-use std::{collections::HashMap, env::var, path::PathBuf};
+#[allow(unused_imports)]
+use std::{collections::HashMap, env::var, path::{Path, PathBuf}};
 
 #[allow(unused_imports)]
 use super::{gdext::GDExtension, NODE_RUST};
@@ -136,7 +137,7 @@ impl IconsCopyStrategy {
     }
 }
 
-/// The **relative** paths of the directories where the icons are stored.
+/// The **relative** paths of the directories where the icons are stored. They will be stored with [`to_string_lossy`](Path::to_string_lossy), so the directories must be composed of Unicode characters.
 #[derive(Debug)]
 pub struct IconsDirectories {
     /// The path to the folder **relative** to `res://` where all the icons are stored. Defaults to the "addons" folder.
