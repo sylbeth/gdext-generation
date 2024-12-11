@@ -11,6 +11,7 @@ use std::{
 use args::{EntrySymbol, IconsConfig, WindowsABI};
 use features::target::Target;
 use gdext::{config::Configuration, GDExtension};
+use toml_edit::DocumentMut;
 
 pub mod args;
 pub mod features;
@@ -99,14 +100,11 @@ pub fn generate_gdextension_file(
     }
 
     // A TOML Error gets associated with the InvalidData IO ErrorKind.
-    let toml_string;
-    File::create(gdextension_path)?.write(match toml::to_string_pretty(&gdextension) {
-        Ok(toml) => {
-            toml_string = toml;
-            toml_string.as_bytes()
-        }
+    let toml_document = match toml::to_string_pretty(&gdextension) {
+        Ok(toml) => toml,
         Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
-    })?;
+    }.parse::<DocumentMut>().expect("Invalid toml that was just parsed.");
+    File::create(gdextension_path)?.write(toml_document.to_string().as_bytes())?;
 
     Ok(())
 }
