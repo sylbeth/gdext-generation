@@ -25,7 +25,7 @@ impl System {
     ///
     /// # Parameters
     ///
-    /// * `windows_abi` - ABI used to build for `Windows`.
+    /// * `windows_abi` - Env and ABI used to build for `Windows`.
     ///
     /// # Returns
     ///

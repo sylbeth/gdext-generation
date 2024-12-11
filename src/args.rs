@@ -10,7 +10,7 @@ use std::{
 #[allow(unused_imports)]
 use super::gdext::GDExtension;
 
-/// ABI used to build the `Rust GDExtension` for `Windows`.
+/// Env and ABI used to build the `Rust GDExtension` for `Windows`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum WindowsABI {
     /// Microsoft Visual C++ compiler.
