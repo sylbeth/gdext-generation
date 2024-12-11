@@ -143,7 +143,7 @@ pub struct IconsDirectories {
     pub base_directory: PathBuf,
     /// The path to the folder **relative** to `res://{base_directory}` where all the editor icons are stored. Defaults to the "editor" folder inside addons.
     pub editor_directory: PathBuf,
-    /// The path to the folder **relative** to `res://{base_directory}` where all the custom icons for this library are stored. Defaults to "", so the same as the base directory.
+    /// The path to the folder **relative** to `res://{base_directory}` where all the custom icons for this library are stored. Defaults to the "{crate_name}" folder inside addons.
     pub custom_directory: PathBuf,
 }
 
@@ -152,7 +152,9 @@ impl Default for IconsDirectories {
         Self {
             base_directory: "addons".into(),
             editor_directory: "editor".into(),
-            custom_directory: "".into(),
+            custom_directory: var("CARGO_PKG_NAME").map_or("rust".into(), |entry_symbol| {
+                entry_symbol.replace('-', "_").into()
+            }),
         }
     }
 }
