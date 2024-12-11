@@ -70,6 +70,5 @@ impl GDExtension {
 /// * [`Ok`] - If the `base_class_to_nodes` [`HashMap`] could be filled.
 /// * [`Err`] - Otherwise.
 fn find_children(base_class_to_nodes: &mut HashMap<String, Vec<String>>) -> Result<()> {
-    }
     Ok(())
 }
