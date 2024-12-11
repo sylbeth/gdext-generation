@@ -8,7 +8,7 @@ use std::{
 };
 
 #[allow(unused_imports)]
-use super::{gdext::GDExtension, NODE_RUST};
+use super::gdext::GDExtension;
 
 /// ABI used to build the `Rust GDExtension` for `Windows`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
