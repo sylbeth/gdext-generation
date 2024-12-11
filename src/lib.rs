@@ -17,7 +17,10 @@ pub mod features;
 pub mod gdext;
 pub mod prelude {
     pub use super::{
-        args::{DefaultNodeIcon, IconsConfig, IconsCopyStrategy, IconsDirectories, WindowsABI},
+        args::{
+            DefaultNodeIcon, EntrySymbol, IconsConfig, IconsCopyStrategy, IconsDirectories,
+            WindowsABI,
+        },
         features::{arch::Architecture, mode::Mode, sys::System, target::Target},
         gdext::config::Configuration,
         generate_gdextension_file,

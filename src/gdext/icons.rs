@@ -37,7 +37,8 @@ impl GDExtension {
                             .join(&icon)
                             .to_string_lossy()
                     )
-                    .into());
+                    .into(),
+                );
             }
         }
 

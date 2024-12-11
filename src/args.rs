@@ -1,7 +1,11 @@
 //! Module with the structs and enums needed to call the main function of the library.
 
 #[allow(unused_imports)]
-use std::{collections::HashMap, env::var, path::{Path, PathBuf}};
+use std::{
+    collections::HashMap,
+    env::var,
+    path::{Path, PathBuf},
+};
 
 #[allow(unused_imports)]
 use super::{gdext::GDExtension, NODE_RUST};
