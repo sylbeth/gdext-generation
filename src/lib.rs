@@ -8,7 +8,7 @@ use std::{
     path::PathBuf,
 };
 
-use args::{EntrySymbol, WindowsABI};
+use args::{EntrySymbol, IconsConfig, WindowsABI};
 use features::target::Target;
 use gdext::{config::Configuration, GDExtension};
 
@@ -17,7 +17,7 @@ pub mod features;
 pub mod gdext;
 pub mod prelude {
     pub use super::{
-        args::{DefaultNodeIcon, WindowsABI},
+        args::{DefaultNodeIcon, IconsConfig, IconsCopyStrategy, IconsDirectories, WindowsABI},
         features::{arch::Architecture, mode::Mode, sys::System, target::Target},
         gdext::config::Configuration,
         generate_gdextension_file,
@@ -44,6 +44,7 @@ const PROJECT_FOLDER: &str = "res://";
 /// * `gdextension_path` - Path where the `.gdextension` file will be written in, **relative** to the *crate folder*. If [`None`] is provided, defaults to `"../godot/rust.gdextension"`, the path provided in the `godot-rust` book.
 /// * `configuration` - [`Configuration`] section of the `.gdextension` file. If [`None`] is provided, defaults to the one found in the `godot-rust` book.
 /// * `windows_abi` - `ABI` used when compiling the crate for `Windows`. If [`None`] is provided, defaults to [`MSVC`](WindowsABI::MSVC), the default for `Rust` in `Windows`.
+/// * `icons_configuration` - Configuration for the generation of the icon section of the `.gdextension` file. If [`None`] is provided, it doesn't generate the icons section.
 /// * `dependencies` - Configuration for the generation of the dependencies section of the `.gdextension` file, comprised of the targets that have dependencies and the paths (**relative** to the *`Godot` project folder*) of all the dependencies. If [`None`] is provided, it doesn't generate the dependencies section.
 ///
 /// # Returns
@@ -54,6 +55,7 @@ pub fn generate_gdextension_file(
     gdextension_path: Option<PathBuf>,
     configuration: Option<Configuration>,
     windows_abi: Option<WindowsABI>,
+    icons_configuration: Option<IconsConfig>,
     dependencies: Option<HashMap<Target, Vec<PathBuf>>>,
 ) -> Result<()> {
     // Default values for the parameters.
@@ -84,6 +86,10 @@ pub fn generate_gdextension_file(
     let mut gdextension = GDExtension::from_config(configuration);
 
     gdextension.generate_libs(lib_name.as_str(), windows_abi, target_dir);
+
+    if let Some(icons_configuration) = icons_configuration {
+        gdextension.generate_icons(icons_configuration)?;
+    }
 
     if let Some(dependencies) = dependencies {
         gdextension.generate_deps(dependencies);
