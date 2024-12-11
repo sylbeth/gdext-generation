@@ -3,6 +3,7 @@
 use super::{arch::Architecture, mode::Mode, sys::System};
 
 /// Target to compile the `Godot` game and the `Rust GDExtension` to.
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub struct Target(pub System, pub Mode, pub Architecture);
 
 impl Target {

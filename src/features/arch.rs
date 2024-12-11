@@ -1,7 +1,7 @@
 //! Module for the [`Architecture`] a `Godot` game using `Rust GDExtension` can be released for and their representations as `Godot` and `Rust` targets.
 
 /// Architecture to compile the `Godot` game and the `Rust GDExtension` for.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Architecture {
     /// The i868 architecture.
     X86_32,

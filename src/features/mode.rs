@@ -1,7 +1,7 @@
 //! Module for the [`Mode`] a `Godot` game using `Rust GDExtension` can be compiled in.
 
 /// Mode to compile the `Godot` game and the `Rust GDExtension` in.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Mode {
     /// Debug mode.
     Debug,

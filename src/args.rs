@@ -11,7 +11,7 @@ use std::{
 use super::{gdext::GDExtension, NODE_RUST};
 
 /// ABI used to build the `Rust GDExtension` for `Windows`.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum WindowsABI {
     /// Microsoft Visual C++ compiler.
     MSVC,

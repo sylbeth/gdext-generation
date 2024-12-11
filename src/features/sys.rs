@@ -4,7 +4,7 @@ use super::arch::Architecture;
 use crate::args::WindowsABI;
 
 /// System to compile the `Godot` game and the `Rust GDExtension` for.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum System {
     /// Android system.
     Android,
