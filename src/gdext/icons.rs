@@ -1,5 +1,9 @@
 //! Module for the generation of the icons section of the `.gdextension` file.
 
+use std::{collections::HashMap, io::Result};
+
+use toml::Table;
+
 use super::GDExtension;
 use crate::{args::IconsConfig, PROJECT_FOLDER};
 
