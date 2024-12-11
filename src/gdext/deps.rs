@@ -6,7 +6,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use toml::Table;
+use toml_edit::{Decor, InlineTable, Key};
 
 use super::GDExtension;
 use crate::{
@@ -23,19 +23,24 @@ impl GDExtension {
     ///
     /// # Returns
     ///
-    /// The same [`GDExtension`] mutable reference it was passed to it.
-    pub fn generate_deps(&mut self, dependencies: HashMap<Target, Vec<PathBuf>>) -> &mut Self {
-        let mut dependencies_table = Table::new();
+    /// The [`Vec`] of targets and their dependencies to add well formatted to the [`toml_edit::DocumentMut`].
+    pub fn generate_deps(
+        dependencies: HashMap<Target, Vec<PathBuf>>,
+    ) -> Vec<(String, InlineTable)> {
+        let mut dependencies_vector = Vec::new();
+        // Decor for the formatting of the inline keys.
+        let leaf_decor = Decor::new("\n    ", " ");
 
         for (target, paths) in dependencies {
             let target_name = target.get_godot_target();
-            let mut current_dependencies = Table::new();
+            let mut current_dependencies = InlineTable::new();
             for path in paths {
-                current_dependencies.insert(
-                    format!(
+                current_dependencies.insert_formatted(
+                    &Key::from(format!(
                         "{PROJECT_FOLDER}{}",
                         path.to_string_lossy().replace('\\', "/")
-                    ),
+                    ))
+                    .with_leaf_decor(leaf_decor.clone()),
                     match target.0 {
                         System::MacOS => "Contents/Frameworks",
                         _ => "",
@@ -43,11 +48,22 @@ impl GDExtension {
                     .into(),
                 );
             }
-            dependencies_table.insert(target_name, current_dependencies.into());
+
+            // There should at least be one target-dependencies, and thus, a newline can be safely added.
+            current_dependencies
+                .iter_mut()
+                .last()
+                .unwrap()
+                .1
+                .decor_mut()
+                .set_suffix("\n");
+
+            dependencies_vector.push((target_name, current_dependencies));
         }
 
-        self.dependencies = Some(dependencies_table);
+        // Generating the empty table where the dependencies will be formatted in. This is not needed anymore, it's generated using toml_edit instead.
+        //self.dependencies = Some(toml::Table::new());
 
-        self
+        dependencies_vector
     }
 }
