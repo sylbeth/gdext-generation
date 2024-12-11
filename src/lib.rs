@@ -104,9 +104,8 @@ pub fn generate_gdextension_file(
         Ok(toml) => toml,
         Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
     }
-    .parse::<DocumentMut>()
-    .expect("Invalid toml that was just parsed.");
-    File::create(gdextension_path)?.write(toml_document.to_string().as_bytes())?;
+
+    File::create(gdextension_path)?.write(toml_string.as_bytes())?;
 
     Ok(())
 }
