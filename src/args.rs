@@ -65,8 +65,10 @@ impl ToString for EntrySymbol {
 }
 
 /// Node icon to use as the default node when none are specified.
-#[derive(Default, Debug, Clone, Copy)]
+#[derive(Default, Debug, Clone)]
 pub enum DefaultNodeIcon {
+    /// When using a custom icon. The path used is relative to the base directory for icons.
+    Custom(PathBuf),
     /// When using the icon of the base class of the node.
     BaseClass,
     /// When using the [`NODE_RUST`] icon.
