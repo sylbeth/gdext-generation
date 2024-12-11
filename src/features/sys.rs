@@ -49,30 +49,30 @@ impl System {
     pub fn get_architectures(&self) -> Vec<Architecture> {
         match self {
             Self::Android => vec![
+                Architecture::Generic,
                 Architecture::Armv7,
                 Architecture::Arm64,
                 Architecture::X86_32,
                 Architecture::X86_64,
-                Architecture::Generic,
             ],
-            Self::IOS => vec![Architecture::Arm64, Architecture::Generic],
+            Self::IOS => vec![Architecture::Generic, Architecture::Arm64],
             Self::Linux => vec![
+                Architecture::Generic,
                 Architecture::Arm64,
                 Architecture::Rv64,
                 Architecture::X86_64,
-                Architecture::Generic,
             ],
             Self::MacOS => vec![
+                Architecture::Generic,
                 Architecture::Arm64,
                 Architecture::X86_64,
-                Architecture::Generic,
             ],
-            Self::Web => vec![Architecture::Wasm32, Architecture::Generic],
+            Self::Web => vec![Architecture::Generic, Architecture::Wasm32],
             Self::Windows(_) => vec![
+                Architecture::Generic,
                 Architecture::Arm64,
                 Architecture::X86_32,
                 Architecture::X86_64,
-                Architecture::Generic,
             ],
         }
     }
