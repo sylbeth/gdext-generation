@@ -9,7 +9,10 @@ use std::{
 use toml::Table;
 
 use super::GDExtension;
-use crate::{features::{sys::System, target::Target}, PROJECT_FOLDER};
+use crate::{
+    features::{sys::System, target::Target},
+    PROJECT_FOLDER,
+};
 
 impl GDExtension {
     /// Generates the dependencies section of the [`GDExtension`].
