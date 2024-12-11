@@ -103,7 +103,9 @@ pub fn generate_gdextension_file(
     let toml_document = match toml::to_string_pretty(&gdextension) {
         Ok(toml) => toml,
         Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
-    }.parse::<DocumentMut>().expect("Invalid toml that was just parsed.");
+    }
+    .parse::<DocumentMut>()
+    .expect("Invalid toml that was just parsed.");
     File::create(gdextension_path)?.write(toml_document.to_string().as_bytes())?;
 
     Ok(())
