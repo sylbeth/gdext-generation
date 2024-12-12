@@ -11,15 +11,20 @@ use super::GDExtension;
 use crate::{args::IconsConfig, NODE_RUST, NODE_RUST_FILENAME};
 
 #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
-use std::{
-    collections::HashMap, io::{BufRead, BufReader}
-};
+use crate::args::DefaultNodeIcon;
 #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
 use glob::glob;
 #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
-use crate::args::DefaultNodeIcon;
+use std::collections::HashMap;
+
+#[cfg(feature = "simple_find_icons")]
+use std::io::{BufRead, BufReader};
+
+#[cfg(feature = "simple_find_icons")]
+use regex::{Match, Regex};
 
 #[cfg(feature = "find_icons")]
+#[warn(clippy::todo)]
 mod parser;
 
 /*
