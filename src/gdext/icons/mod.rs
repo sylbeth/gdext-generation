@@ -136,5 +136,59 @@ impl GDExtension {
 /// * [`Err`] - Otherwise.
 #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
 fn find_children(base_class_to_nodes: &mut HashMap<String, Vec<String>>) -> Result<()> {
+    #[cfg(feature = "simple_find_icons")]
+    {
+        // Only works if base = BaseClass contains no comments in between.
+        let base_class_regex =
+            Regex::new(r"base(\s+)?\=(\s+)?[\w|_|\d]+").expect("Invalid regex pattern.");
+        // Only works if struct StructName contains no comments in between.
+        let struct_regex = Regex::new(r"struct(\s+)?[\w|_|\d]+").expect("Invalid regex pattern.");
+
+        let mut base_class = String::new();
+        let mut found_base;
+
+        for path_glob in glob("./src/**/*.rs").unwrap() {
+            let path;
+            match path_glob {
+                Ok(pathbuf) => path = pathbuf,
+                Err(_) => continue,
+            }
+            found_base = false;
+            for line in BufReader::new(File::open(path)?).lines() {
+                let line: String = line?;
+                if line.contains("base") & line.contains("=") {
+                    base_class =
+                        base_class_regex
+                            .find(&line)
+                            .map_or("ERROR".into(), |base_class_match| {
+                                Match::as_str(&base_class_match)
+                                    .replace("base", "")
+                                    .replace('=', "")
+                                    .trim()
+                                    .into()
+                            });
+                    if !base_class_to_nodes.contains_key(&base_class) {
+                        base_class_to_nodes.insert(base_class.clone(), Vec::new());
+                    }
+                    found_base = true;
+                } else if found_base & !line.starts_with("///") & line.contains("struct") {
+                    base_class_to_nodes
+                        .get_mut(&base_class)
+                        .expect("The map doesn't contain the key that was just pushed to it.")
+                        .push(struct_regex.find(&line).map_or(
+                            "ERROR".into(),
+                            |struct_class_match| {
+                                Match::as_str(&struct_class_match)
+                                    .replace("struct", "")
+                                    .trim()
+                                    .into()
+                            },
+                        ));
+                    found_base = false;
+                }
+            }
+        }
+    }
+
     Ok(())
 }
