@@ -1,7 +1,9 @@
 //! Module for the definition of the structs to be serialized to build the `.gdextension` file, and the functions to generate the file.
 
 pub mod config;
+#[cfg(feature = "dependencies")]
 pub mod deps;
+#[cfg(feature = "icons")]
 pub mod icons;
 pub mod libs;
 
@@ -18,9 +20,13 @@ pub struct GDExtension {
     /// Libraries section of the `.gdextension` file. Links the `godot` target to the compiled [`GDExtension`] libraries. It contains relationships of `godot_target: GDExtensionCdylibPath`.
     libraries: Table,
     /// Icons section of the `.gdextension` file. Links the [`GDExtension`] classes to the files to use as their editor icons. It contains relationships of `ClassName: IconPath`.
+    #[cfg(feature = "icons")]
     icons: Option<Table>,
+    // The dependencies section is not needed anymore since it's parsed through toml_edit.
+    /*
     /// Dependencies section of the `.gdextension` file. It contains tables with key `running_system.build_mode`, whose entries are `GDExtensionCdylibPath: dependency`.
     dependencies: Option<Table>,
+    */
 }
 
 impl GDExtension {
@@ -37,8 +43,9 @@ impl GDExtension {
         Self {
             configuration,
             libraries: Table::new(),
+            #[cfg(feature = "icons")]
             icons: None,
-            dependencies: None,
+            //dependencies: None,
         }
     }
 }
