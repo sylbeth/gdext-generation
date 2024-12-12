@@ -1,22 +1,26 @@
 //! Module for the generation of the icons section of the `.gdextension` file.
 
 use std::{
-    collections::HashMap,
     fs::File,
-    io::{BufRead, BufReader, Result, Write},
+    io::{Result, Write},
 };
 
-use glob::glob;
 use toml::Table;
 
 use super::GDExtension;
 use crate::{args::IconsConfig, NODE_RUST, NODE_RUST_FILENAME};
 
-#[cfg(feature = "find_icons")]
-mod parser;
-
+#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+use std::{
+    collections::HashMap, io::{BufRead, BufReader}
+};
+#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+use glob::glob;
 #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
 use crate::args::DefaultNodeIcon;
+
+#[cfg(feature = "find_icons")]
+mod parser;
 
 /*
 const base_checkers: [&str; 2] = ["base", "="];
