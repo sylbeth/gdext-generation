@@ -10,7 +10,8 @@ use toml_edit::{Decor, InlineTable, Key};
 
 use super::GDExtension;
 use crate::{
-    args::BaseDirectory, features::{sys::System, target::Target}
+    args::BaseDirectory,
+    features::{sys::System, target::Target},
 };
 
 impl GDExtension {
