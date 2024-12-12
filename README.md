@@ -58,8 +58,9 @@ fn main() -> Result<()> {
             DefaultNodeIcon::NodeRust("rust".into()),
             IconsCopyStrategy::new(true, "../godot/addons/rust".into(), false),
             None,
-            IconsDirectories::new("addons".into(), "editor".into(), "rust".into(), BaseDirectory::ProjectFolder.into())
+            IconsDirectories::new("addons".into(), "editor".into(), "rust".into(), BaseDirectory::ProjectFolder.into()),
         )),
+        None,
     )?;
 
     Ok(())
