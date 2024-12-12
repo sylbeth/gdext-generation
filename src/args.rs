@@ -95,7 +95,7 @@ impl WindowsABI {
 
 /// Node icon to use as the default node when none are specified.
 #[derive(Default, Debug, Clone, PartialEq)]
-#[cfg(feature = "icons")]
+#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
 pub enum DefaultNodeIcon {
     /// When using a custom icon. The path used is relative to the base directory for icons.
     Custom(PathBuf),
@@ -210,13 +210,13 @@ impl IconsDirectories {
         base_directory: PathBuf,
         editor_directory: PathBuf,
         custom_directory: PathBuf,
-        relative_directory: Option<BaseDirectory>
+        relative_directory: Option<BaseDirectory>,
     ) -> Self {
         Self {
             base_directory,
             editor_directory,
             custom_directory,
-            relative_directory
+            relative_directory,
         }
     }
 }
@@ -226,6 +226,7 @@ impl IconsDirectories {
 #[cfg(feature = "icons")]
 pub struct IconsConfig {
     /// The default icon to use when no specified icon was provided.
+    #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
     pub default: DefaultNodeIcon,
     /// The [`IconsCopyStrategy`] for the files needed for the icons to be displayed.
     pub copy_strategy: IconsCopyStrategy,
@@ -241,7 +242,7 @@ impl IconsConfig {
     ///
     /// # Parameters
     ///
-    /// * `default` - The default icon to use when no specified icon was provided.
+    /// * `default` - The default icon to use when no specified icon was provided. If none of the find_icons features are activated, it's not there, and `Godot`'s Node is assumed instead.
     /// * `copy_strategy` - The [`IconsCopyStrategy`] for the files needed for the icons to be displayed.
     /// * `custom_icons` - The custom icons to use. It contains pairs of `ClassName: IconPath`, where IconPath is the path **relative** to the `custom_directory` specified in `directories`.
     /// * `directories` - The **relative** paths of the directories where the icons are stored.
@@ -250,12 +251,13 @@ impl IconsConfig {
     ///
     /// The [`IconsConfig`] instancte with its fields initialized.
     pub fn new(
-        default: DefaultNodeIcon,
+        #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))] default: DefaultNodeIcon,
         copy_strategy: IconsCopyStrategy,
         custom_icons: Option<HashMap<String, PathBuf>>,
         directories: IconsDirectories,
     ) -> Self {
         Self {
+            #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
             default,
             copy_strategy,
             custom_icons,

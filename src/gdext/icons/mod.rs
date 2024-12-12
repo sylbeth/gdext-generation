@@ -1,11 +1,43 @@
 //! Module for the generation of the icons section of the `.gdextension` file.
 
-use std::{collections::HashMap, fs::File, io::{Result, Write}};
+use std::{
+    collections::HashMap,
+    fs::File,
+    io::{BufRead, BufReader, Result, Write},
+};
 
+use glob::glob;
 use toml::Table;
 
 use super::GDExtension;
-use crate::{args::{DefaultNodeIcon, IconsConfig}, NODE_RUST, NODE_RUST_FILENAME};
+use crate::{args::IconsConfig, NODE_RUST, NODE_RUST_FILENAME};
+
+#[cfg(feature = "find_icons")]
+mod parser;
+
+#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+use crate::args::DefaultNodeIcon;
+
+/*
+const base_checkers: [&str; 2] = ["base", "="];
+const struct_checker: &str = "struct";
+
+enum FirstCheck {
+    Base,
+    Equal,
+    Struct,
+    None,
+}
+
+enum CurrentTraversal {
+    InComment,
+    FindBase,
+    FindEqual,
+    FindIcon,
+    FindStruct,
+    FindName,
+}
+*/
 
 impl GDExtension {
     /// Generates the icons section of the [`GDExtension`].
@@ -22,27 +54,32 @@ impl GDExtension {
     pub fn generate_icons(&mut self, icons_config: IconsConfig) -> Result<&mut Self> {
         let mut icons = Table::new();
 
-        let mut base_class_to_nodes = HashMap::<String, Vec<String>>::new();
-
+        #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
         if icons_config.default == DefaultNodeIcon::Node {
-            find_children(&mut base_class_to_nodes)?;
-        }
+            let mut base_class_to_nodes = HashMap::<String, Vec<String>>::new();
 
-        for (icon, nodes) in base_class_to_nodes {
-            for node in nodes {
-                icons.insert(
-                    node,
-                    format!(
-                        "{}{}.svg",
-                        &icons_config.directories.relative_directory.unwrap_or_default().as_str(),
-                        (&icons_config.directories.base_directory)
-                            .join(&icons_config.directories.editor_directory)
-                            .join(&icon)
-                            .to_string_lossy()
-                            .replace('\\', "/")
-                    )
-                    .into(),
-                );
+            find_children(&mut base_class_to_nodes)?;
+
+            for (icon, nodes) in base_class_to_nodes {
+                for node in nodes {
+                    icons.insert(
+                        node,
+                        format!(
+                            "{}{}.svg",
+                            &icons_config
+                                .directories
+                                .relative_directory
+                                .unwrap_or_default()
+                                .as_str(),
+                            (&icons_config.directories.base_directory)
+                                .join(&icons_config.directories.editor_directory)
+                                .join(&icon)
+                                .to_string_lossy()
+                                .replace('\\', "/")
+                        )
+                        .into(),
+                    );
+                }
             }
         }
 
@@ -52,7 +89,11 @@ impl GDExtension {
                     node.clone(),
                     format!(
                         "{}{}",
-                        &icons_config.directories.relative_directory.unwrap_or_default().as_str(),
+                        &icons_config
+                            .directories
+                            .relative_directory
+                            .unwrap_or_default()
+                            .as_str(),
                         (&icons_config.directories.base_directory)
                             .join(&icons_config.directories.custom_directory)
                             .join(icon)
@@ -63,8 +104,13 @@ impl GDExtension {
                 );
             }
         }
-        let path_node_rust = icons_config.copy_strategy.path_node_rust.join(NODE_RUST_FILENAME);
-        if icons_config.copy_strategy.copy_node_rust & (icons_config.copy_strategy.force_copy | !path_node_rust.exists()) {
+        let path_node_rust = icons_config
+            .copy_strategy
+            .path_node_rust
+            .join(NODE_RUST_FILENAME);
+        if icons_config.copy_strategy.copy_node_rust
+            & (icons_config.copy_strategy.force_copy | !path_node_rust.exists())
+        {
             File::create(path_node_rust)?.write_all(NODE_RUST.as_bytes())?;
         }
 
@@ -84,6 +130,7 @@ impl GDExtension {
 ///
 /// * [`Ok`] - If the `base_class_to_nodes` [`HashMap`] could be filled.
 /// * [`Err`] - Otherwise.
+#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
 fn find_children(base_class_to_nodes: &mut HashMap<String, Vec<String>>) -> Result<()> {
     Ok(())
 }

@@ -24,8 +24,10 @@ pub mod args;
 pub mod features;
 pub mod gdext;
 pub mod prelude {
+    #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+    pub use super::args::DefaultNodeIcon;
     #[cfg(feature = "icons")]
-    pub use super::args::{DefaultNodeIcon, IconsConfig, IconsCopyStrategy, IconsDirectories};
+    pub use super::args::{IconsConfig, IconsCopyStrategy, IconsDirectories};
     pub use super::{
         args::{BaseDirectory, EntrySymbol, WindowsABI},
         features::{arch::Architecture, mode::Mode, sys::System, target::Target},
