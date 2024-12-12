@@ -34,6 +34,10 @@ To compile for `Android`, `Web`, `MacOS` or `iOS` please refer to the [`godot-ru
 
 It's worth noting that one can configure when the build script will be run, so it's sensible to change it were one not to need it running at every source file change.
 
+# Limitations
+
+The feature "simple_find_icons" is not a perfect way of finding the icons for each GDExtension custom node, since it doesn't account for comments. If you experience problems due to this fact, due let us know, there may be a fix for it, but "find_icons" is in development to have a parser that will not fail, so consider changing features if you think it's worth it for you.
+
 # Acknowledgements
 
 * This crate is based on the [`gdextension_file` documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_file.html) from [`Godot`](https://godotengine.org/), and some snippets of the documentation are taken as are from their documentation, so they are as accurate as possible. The copyright notices for those files can be found directly in their [repository](https://github.com/godotengine/godot/blob/master/COPYRIGHT.txt), and are licensed under the [`CC BY 3.0`](https://creativecommons.org/licenses/by/3.0/) license. This applies to the doc comments on the serializable structs, so these are not relicensed under the licenses of this repository. The schema for the `.gdextension` file comes from the `Godot Engine` which is licensed under the [`MIT`](https://github.com/godotengine/godot/blob/master/LICENSE.txt) license.
