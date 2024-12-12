@@ -14,7 +14,7 @@ use gdext_gen::generate_gdextension_file;
 
 fn main() {
     // All your variable initialization and setup goes here.
-    generate_gdextension_file(target_dir, gdextension_path, configuration, windows_abi, icons_configuration, dependencies);
+    generate_gdextension_file(base_dir, target_dir, gdextension_path, configuration, windows_abi, icons_configuration, dependencies);
 }
 ```
 
@@ -26,7 +26,7 @@ use gdext_gen::generate_gdextension_file;
 
 fn main() -> Result<()> {
     // All your variable initialization and setup goes here.
-    generate_gdextension_file(target_dir, gdextension_path, configuration, windows_abi, icons_configuration, dependencies)?;
+    generate_gdextension_file(base_dir, target_dir, gdextension_path, configuration, windows_abi, icons_configuration, dependencies)?;
 }
 ```
 

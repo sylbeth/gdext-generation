@@ -10,28 +10,31 @@ use std::{
 #[allow(unused_imports)]
 use super::gdext::GDExtension;
 
-/// Env and ABI used to build the `Rust GDExtension` for `Windows`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum WindowsABI {
-    /// Microsoft Visual C++ compiler.
-    MSVC,
-    /// The `MinGW` compiler (`MSYS2` port of `GCC`).
-    MinGW,
-    /// Similar to `MinGW` but using `UCRT` as the runtime and various `LLVM` tools/libraries instead of `GCC/Binutils`. More information: https://doc.rust-lang.org/rustc/platform-support/pc-windows-gnullvm.html
-    LLVM,
+/// The representation of a path **relative** to the `Godot` project folder.
+const PROJECT_FOLDER: &str = "res://";
+
+/// The representation of a path **relative** to the folder where `.gdextension` lies.
+const GDEXTENSION_FOLDER: &str = "";
+
+/// The base directory to use for paths.
+#[derive(Default, Debug, Clone, Copy)]
+pub enum BaseDirectory {
+    /// Uses the folder where `project.godot` lies as the base for relative paths. Makes all paths start with `"res://"`.
+    #[default]
+    ProjectFolder,
+    /// Uses the folder where the `.gdextension` file lies as the base for relative paths. Makes all paths start with `""`.
+    GDExtensionFolder,
 }
 
-impl WindowsABI {
-    /// Gets the name of the [`WindowsABI`] used in `Rust` target triples.
+impl BaseDirectory {
+    /// Retrieves the base directory as the string to start the paths.
     ///
     /// # Returns
-    ///
-    /// The name of the [`WindowsABI`] for the `Rust` target triple.
-    pub fn get_rust_name(&self) -> &'static str {
+    /// "res://" if it is ProjectFolder or "" if it is GDExtensionFolder.
+    pub fn as_str(&self) -> &'static str {
         match self {
-            Self::MSVC => "msvc",
-            Self::MinGW => "gnu",
-            Self::LLVM => "gnullvm",
+            BaseDirectory::ProjectFolder => PROJECT_FOLDER,
+            BaseDirectory::GDExtensionFolder => GDEXTENSION_FOLDER,
         }
     }
 }
@@ -64,6 +67,32 @@ impl ToString for EntrySymbol {
     }
 }
 
+/// Env and ABI used to build the `Rust GDExtension` for `Windows`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum WindowsABI {
+    /// Microsoft Visual C++ compiler.
+    MSVC,
+    /// The `MinGW` compiler (`MSYS2` port of `GCC`).
+    MinGW,
+    /// Similar to `MinGW` but using `UCRT` as the runtime and various `LLVM` tools/libraries instead of `GCC/Binutils`. More information: https://doc.rust-lang.org/rustc/platform-support/pc-windows-gnullvm.html
+    LLVM,
+}
+
+impl WindowsABI {
+    /// Gets the name of the [`WindowsABI`] used in `Rust` target triples.
+    ///
+    /// # Returns
+    ///
+    /// The name of the [`WindowsABI`] for the `Rust` target triple.
+    pub fn get_rust_name(&self) -> &'static str {
+        match self {
+            Self::MSVC => "msvc",
+            Self::MinGW => "gnu",
+            Self::LLVM => "gnullvm",
+        }
+    }
+}
+
 /// Node icon to use as the default node when none are specified.
 #[derive(Default, Debug, Clone)]
 #[cfg(feature = "icons")]
@@ -85,8 +114,8 @@ pub enum DefaultNodeIcon {
 pub struct IconsCopyStrategy {
     /// Whether or not to copy the NodeRust.svg file.
     pub copy_node_rust: bool,
-    /// Whether or not to copy the Godot editor icons.
-    pub copy_editor_icons: bool,
+    /// Path to the icon copied relative to the icons base directory.
+    pub path_node_rust: PathBuf,
     /// Whether or not to copy if the files already exist.
     pub force_copy: bool,
 }
@@ -98,16 +127,16 @@ impl IconsCopyStrategy {
     /// # Parameters
     ///
     /// * `copy_node_rust` - Whether or not to copy the NodeRust.svg file.
-    /// * `copy_editor_icons` - Whether or not to copy the Godot editor icons.
+    /// * `path_node_rust` - Path to the icon copied relative to the icons base directory.
     /// * `force_copy` - Whether or not to copy if the files already exist.
     ///
     /// # Returns
     ///
     /// The [`IconsCopyStrategy`] instancte with its fields initialized.
-    pub fn new(copy_node_rust: bool, copy_editor_icons: bool, force_copy: bool) -> Self {
+    pub fn new(copy_node_rust: bool, path_node_rust: PathBuf, force_copy: bool) -> Self {
         Self {
             copy_node_rust,
-            copy_editor_icons,
+            path_node_rust,
             force_copy,
         }
     }
@@ -119,17 +148,6 @@ impl IconsCopyStrategy {
     /// The same [`IconsCopyStrategy`] it was passed to it with `copy_node_rust` set to `true`.
     pub fn copy_node_rust(mut self) -> Self {
         self.copy_node_rust = true;
-
-        self
-    }
-
-    /// Changes the `copy_editor_icons` field to `true` and returns the same struct.
-    ///
-    /// # Returns
-    ///
-    /// The same [`IconsCopyStrategy`] it was passed to it with `copy_editor_icons` set to `true`.
-    pub fn copy_editor_icons(mut self) -> Self {
-        self.copy_editor_icons = true;
 
         self
     }
@@ -150,12 +168,14 @@ impl IconsCopyStrategy {
 #[derive(Debug)]
 #[cfg(feature = "icons")]
 pub struct IconsDirectories {
-    /// The path to the folder **relative** to `res://` where all the icons are stored. Defaults to the "addons" folder.
+    /// The path to the folder **relative** to `{relative_dir.as_str()}` where all the icons are stored. Defaults to the "addons" folder.
     pub base_directory: PathBuf,
-    /// The path to the folder **relative** to `res://{base_directory}` where all the editor icons are stored. Defaults to the "editor" folder inside addons.
+    /// The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the editor icons are stored. Defaults to the "editor" folder inside addons.
     pub editor_directory: PathBuf,
-    /// The path to the folder **relative** to `res://{base_directory}` where all the custom icons for this library are stored. Defaults to the "{crate_name}" folder inside addons.
+    /// The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the custom icons for this library are stored. Defaults to the "{crate_name}" folder inside addons.
     pub custom_directory: PathBuf,
+    /// The folder to use as a base for the base directory of icons. If [`None`] is provided, the one used to call [`generate_gdextension_file`](crate::generate_gdextension_file) will be used instead.
+    pub relative_directory: Option<BaseDirectory>,
 }
 
 #[cfg(feature = "icons")]
@@ -167,6 +187,7 @@ impl Default for IconsDirectories {
             custom_directory: var("CARGO_PKG_NAME").map_or("rust".into(), |entry_symbol| {
                 entry_symbol.replace('-', "_").into()
             }),
+            relative_directory: None,
         }
     }
 }
@@ -177,9 +198,10 @@ impl IconsDirectories {
     ///
     /// # Parameters
     ///
-    /// * `base_directory` - The path to the folder **relative** to `res://` where all the icons are stored. Defaults to the "addons" folder.
-    /// * `editor_directory` - The path to the folder **relative** to `res://{base_directory}` where all the editor icons are stored. Defaults to the "editor" folder inside addons.
-    /// * `custom_directory` - The path to the folder **relative** to `res://{base_directory}` where all the custom icons for this library are stored. Defaults to "", so the same as the base directory.
+    /// * `base_directory` - The path to the folder **relative** to `{relative_dir.as_str()}` where all the icons are stored. Defaults to the "addons" folder.
+    /// * `editor_directory` - The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the editor icons are stored. Defaults to the "editor" folder inside addons.
+    /// * `custom_directory` - The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the custom icons for this library are stored. Defaults to "", so the same as the base directory.
+    /// * `relative_directory` - The folder to use as a base for the base directory of icons. If [`None`] is provided, the one used to call [`generate_gdextension_file`](crate::generate_gdextension_file) will be used instead.
     ///
     /// # Returns
     ///
@@ -188,11 +210,13 @@ impl IconsDirectories {
         base_directory: PathBuf,
         editor_directory: PathBuf,
         custom_directory: PathBuf,
+        relative_directory: Option<BaseDirectory>
     ) -> Self {
         Self {
             base_directory,
             editor_directory,
             custom_directory,
+            relative_directory
         }
     }
 }
