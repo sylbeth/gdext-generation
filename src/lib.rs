@@ -7,7 +7,7 @@ use std::{
     path::PathBuf,
 };
 
-use args::{EntrySymbol, WindowsABI};
+use args::{BaseDirectory, EntrySymbol, WindowsABI};
 use gdext::{config::Configuration, GDExtension};
 
 #[cfg(feature = "dependencies")]
@@ -27,15 +27,12 @@ pub mod prelude {
     #[cfg(feature = "icons")]
     pub use super::args::{DefaultNodeIcon, IconsConfig, IconsCopyStrategy, IconsDirectories};
     pub use super::{
-        args::{EntrySymbol, WindowsABI},
+        args::{BaseDirectory, EntrySymbol, WindowsABI},
         features::{arch::Architecture, mode::Mode, sys::System, target::Target},
         gdext::config::Configuration,
         generate_gdextension_file,
     };
 }
-
-/// The representation of a path **relative** to the `Godot` project folder.
-const PROJECT_FOLDER: &str = "res://";
 
 /// SVG representation of the default GDExtension Rust node.
 ///
@@ -51,17 +48,19 @@ const NODE_RUST: &str = include_str!("assets/NodeRust.svg");
 ///
 /// # Parameters
 ///
-/// * `target_dir` - Path to the target directory of the crate, **relative** to the *`Godot` project folder*. If [`None`] is provided, defaults to `"../rust/target"`, the path provided in the `godot-rust` book.
+/// * `base_dir` - The base directory to use for the paths in the `.gdextension` file.
+/// * `target_dir` - Path to the target directory of the crate, **relative** to the *`base_dir`*. If [`None`] is provided, defaults to `"../rust/target"`, the path provided in the `godot-rust` book.
 /// * `gdextension_path` - Path where the `.gdextension` file will be written in, **relative** to the *crate folder*. If [`None`] is provided, defaults to `"../godot/rust.gdextension"`, the path provided in the `godot-rust` book.
 /// * `configuration` - [`Configuration`] section of the `.gdextension` file. If [`None`] is provided, defaults to the one found in the `godot-rust` book.
 /// * `windows_abi` - `ABI` used when compiling the crate for `Windows`. If [`None`] is provided, defaults to [`MSVC`](WindowsABI::MSVC), the default for `Rust` in `Windows`.
 /// * `icons_configuration` - Configuration for the generation of the icon section of the `.gdextension` file. If [`None`] is provided, it doesn't generate the icons section. Available with feature "icons".
-/// * `dependencies` - Configuration for the generation of the dependencies section of the `.gdextension` file, comprised of the targets that have dependencies and the paths (**relative** to the *`Godot` project folder*) of all the dependencies. If [`None`] is provided, it doesn't generate the dependencies section. Available with feature "dependencies".
+/// * `dependencies` - Configuration for the generation of the dependencies section of the `.gdextension` file, comprised of the targets that have dependencies and the paths (**relative** to the *`base_dir`*) of all the dependencies. If [`None`] is provided, it doesn't generate the dependencies section. Available with feature "dependencies".
 ///
 /// # Returns
 /// * [`Ok`] - If the generation was successful and no IO errors or TOML errors happened.
 /// * [`Err`] - If there has been a problem writing or serializing the TOML file, copying the necessary icons or reading the source to find the associations `ClassName: IconPath` for the icons.
 pub fn generate_gdextension_file(
+    base_dir: BaseDirectory,
     target_dir: Option<PathBuf>,
     gdextension_path: Option<PathBuf>,
     configuration: Option<Configuration>,
@@ -96,10 +95,13 @@ pub fn generate_gdextension_file(
 
     let mut gdextension = GDExtension::from_config(configuration);
 
-    gdextension.generate_libs(lib_name.as_str(), windows_abi, target_dir);
+    gdextension.generate_libs(base_dir, lib_name.as_str(), windows_abi, target_dir);
 
     #[cfg(feature = "icons")]
-    if let Some(icons_configuration) = icons_configuration {
+    if let Some(mut icons_configuration) = icons_configuration {
+        if icons_configuration.directories.relative_directory.is_none() {
+            icons_configuration.directories.relative_directory = Some(base_dir)
+        }
         gdextension.generate_icons(icons_configuration)?;
     }
 
@@ -118,7 +120,7 @@ pub fn generate_gdextension_file(
 
         toml_document["dependencies"] = toml_table();
 
-        for (target, dependencies) in GDExtension::generate_deps(dependencies) {
+        for (target, dependencies) in GDExtension::generate_deps(base_dir, dependencies) {
             toml_document["dependencies"][target] = toml_value(dependencies);
         }
 

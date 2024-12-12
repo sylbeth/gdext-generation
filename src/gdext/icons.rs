@@ -5,14 +5,14 @@ use std::{collections::HashMap, io::Result};
 use toml::Table;
 
 use super::GDExtension;
-use crate::{args::IconsConfig, PROJECT_FOLDER};
+use crate::args::IconsConfig;
 
 impl GDExtension {
     /// Generates the icons section of the [`GDExtension`].
     ///
     /// # Parameters
     ///
-    /// * `icon_config` - Configuration struct for the generation of icons.
+    /// * `icon_config` - Configuration struct for the generation of icons. If `relative_directory` of the [`IconsDirectories`](crate::args::IconsDirectories) is [`None`] it will use the default value.
     ///
     /// # Returns
     ///
@@ -31,7 +31,8 @@ impl GDExtension {
                 icons.insert(
                     node,
                     format!(
-                        "{PROJECT_FOLDER}{}.svg",
+                        "{}{}.svg",
+                        &icons_config.directories.relative_directory.unwrap_or_default().as_str(),
                         (&icons_config.directories.base_directory)
                             .join(&icons_config.directories.editor_directory)
                             .join(&icon)
@@ -48,7 +49,8 @@ impl GDExtension {
                 icons.insert(
                     node.clone(),
                     format!(
-                        "{PROJECT_FOLDER}{}",
+                        "{}{}",
+                        &icons_config.directories.relative_directory.unwrap_or_default().as_str(),
                         (&icons_config.directories.base_directory)
                             .join(&icons_config.directories.custom_directory)
                             .join(icon)
