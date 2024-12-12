@@ -93,6 +93,20 @@ impl WindowsABI {
     }
 }
 
+/// Represents one of the three avilable default nodes for Rust.
+#[derive(Default, Debug, Clone, Copy, PartialEq)]
+#[repr(usize)]
+#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+pub enum NodeRust {
+    /// Small version of the icon based on the `godot-rust` logo.
+    #[default]
+    Small,
+    /// Large version of the icon based on the `godot-rust` logo.
+    Large,
+    /// Icon based on `Rust`'s Ferris.
+    Ferris,
+}
+
 /// Node icon to use as the default node when none are specified.
 #[derive(Default, Debug, Clone, PartialEq)]
 #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
@@ -101,8 +115,8 @@ pub enum DefaultNodeIcon {
     Custom(PathBuf),
     /// When using the icon of the base class of the node. They will always be searched for in the editor directory for icons.
     BaseClass,
-    /// When using the [`NODE_RUST`] icon. The path used is relative to the to the base directory for icons, but it's only to the folder that contains the `NodeRust.svg`, it must NOT have "NodeRust.svg" in it.
-    NodeRust(PathBuf),
+    /// When using the [`NODE_RUST`] icon. The path used is relative to the to the base directory for icons, but it's only to the folder that contains the `NodeRust` files, it must NOT have the filename in it.
+    NodeRust(NodeRust, PathBuf),
     /// When using the default Godot node icon.
     #[default]
     Node,
@@ -112,8 +126,10 @@ pub enum DefaultNodeIcon {
 #[derive(Debug, Default)]
 #[cfg(feature = "icons")]
 pub struct IconsCopyStrategy {
-    /// Whether or not to copy the NodeRust.svg file.
+    /// Whether or not to copy the `NodeRust` file.
     pub copy_node_rust: bool,
+    /// Whether or not to copy all the `NodeRust` files.
+    pub copy_all: bool,
     /// Path to the folder where the icon will be copied relative to the *crate folder*.
     pub path_node_rust: PathBuf,
     /// Whether or not to copy if the files already exist.
@@ -127,15 +143,17 @@ impl IconsCopyStrategy {
     /// # Parameters
     ///
     /// * `copy_node_rust` - Whether or not to copy the NodeRust.svg file.
+    /// * `copy_all` - Whether or not to copy all the `NodeRust` files.
     /// * `path_node_rust` - Path to the icon copied relative to the *crate folder*.
     /// * `force_copy` - Whether or not to copy if the files already exist.
     ///
     /// # Returns
     ///
     /// The [`IconsCopyStrategy`] instancte with its fields initialized.
-    pub fn new(copy_node_rust: bool, path_node_rust: PathBuf, force_copy: bool) -> Self {
+    pub fn new(copy_node_rust: bool, copy_all: bool, path_node_rust: PathBuf, force_copy: bool) -> Self {
         Self {
             copy_node_rust,
+            copy_all,
             path_node_rust,
             force_copy,
         }

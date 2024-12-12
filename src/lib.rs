@@ -26,7 +26,7 @@ pub mod features;
 pub mod gdext;
 pub mod prelude {
     #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
-    pub use super::args::DefaultNodeIcon;
+    pub use super::args::{DefaultNodeIcon, NodeRust};
     #[cfg(feature = "icons")]
     pub use super::args::{IconsConfig, IconsCopyStrategy, IconsDirectories};
     pub use super::{
@@ -40,7 +40,7 @@ pub mod prelude {
 #[cfg(all(feature = "find_icons", feature = "simple_find_icons"))]
 compile_error!("The features that enable the finding of icons are mutually exclusive, you either use the regex or the language parser, but you can't use both. Deactivate \"find_icons\" or \"simple_find_icons\".");
 
-/// SVG representation of the default GDExtension Rust node.
+/// SVG representations of the default GDExtension Rust nodes.
 ///
 /// # Author
 /// [burritobandit28](https://github.com/burritobandit28)
@@ -48,10 +48,19 @@ compile_error!("The features that enable the finding of icons are mutually exclu
 /// # License
 /// [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)
 #[cfg(feature = "icons")]
-const NODE_RUST: &str = include_str!("assets/NodeRust.svg");
+const NODES_RUST: [&str; 3] = [
+    include_str!("assets/NodeRustSmall.svg"),
+    include_str!("assets/NodeRustLarge.svg"),
+    include_str!("assets/NodeRustFerris.svg"),
+];
 
-/// Name of the NodeRust.svg file.
-pub const NODE_RUST_FILENAME: &str = "NodeRust.svg";
+/// Name of the NodeRust files.
+#[cfg(feature = "icons")]
+pub const NODES_RUST_FILENAMES: [&str; 3] = [
+    "NodeRustSmall.svg",
+    "NodeRustLarge.svg",
+    "NodeRustFerris.svg"
+];
 
 /// Generates the `.gdextension` file for the crate using all the necessary information.
 ///

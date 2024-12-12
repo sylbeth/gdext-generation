@@ -8,7 +8,7 @@ use std::{
 use toml::Table;
 
 use super::GDExtension;
-use crate::{args::IconsConfig, NODE_RUST, NODE_RUST_FILENAME};
+use crate::{args::IconsConfig, NODES_RUST, NODES_RUST_FILENAMES};
 
 #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
 use crate::args::DefaultNodeIcon;
@@ -101,7 +101,7 @@ impl GDExtension {
                                     .replace('\\', "/")
                             )
                             .into(),
-                            DefaultNodeIcon::NodeRust(ref rust_path) => format!(
+                            DefaultNodeIcon::NodeRust(node_rust, ref rust_path) => format!(
                                 "{}{}/{}",
                                 &icons_config
                                     .directories
@@ -112,7 +112,7 @@ impl GDExtension {
                                     .join(&rust_path)
                                     .to_string_lossy()
                                     .replace('\\', "/"),
-                                NODE_RUST_FILENAME,
+                                NODES_RUST_FILENAMES[node_rust as usize],
                             )
                             .into(),
                             DefaultNodeIcon::Node => "ERROR".into(),
@@ -143,14 +143,25 @@ impl GDExtension {
                 );
             }
         }
-        let path_node_rust = icons_config
-            .copy_strategy
-            .path_node_rust
-            .join(NODE_RUST_FILENAME);
-        if icons_config.copy_strategy.copy_node_rust
-            & (icons_config.copy_strategy.force_copy | !path_node_rust.exists())
-        {
-            File::create(path_node_rust)?.write_all(NODE_RUST.as_bytes())?;
+        if icons_config.copy_strategy.copy_node_rust {
+            let base_directory_path = icons_config.copy_strategy.path_node_rust;
+            let mut nodes_rust = Vec::new();
+            
+            if icons_config.copy_strategy.copy_all {
+                nodes_rust.extend(NODES_RUST_FILENAMES.into_iter().zip(NODES_RUST));
+            } else {
+                #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+                if let DefaultNodeIcon::NodeRust(node_rust, _) = icons_config.default {
+                    nodes_rust.push((NODES_RUST_FILENAMES[node_rust as usize], NODES_RUST[node_rust as usize]));
+                }
+            }
+            
+            for (file_name, node_rust) in nodes_rust {
+                let path_node_rust = (&base_directory_path).join(file_name);
+                if icons_config.copy_strategy.force_copy | !path_node_rust.exists() {
+                    File::create(path_node_rust)?.write_all(node_rust.as_bytes())?;
+                }
+            }
         }
 
         self.icons = Some(icons);

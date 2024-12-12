@@ -55,8 +55,8 @@ fn main() -> Result<()> {
         )),
         Some(WindowsABI::MSVC),
         Some(IconsConfig::new(
-            DefaultNodeIcon::NodeRust("rust".into()),
-            IconsCopyStrategy::new(true, "../godot/addons/rust".into(), false),
+            DefaultNodeIcon::NodeRust(NodeRust::Ferris, "rust".into()),
+            IconsCopyStrategy::new(true, true, "../godot/addons/rust".into(), false),
             None,
             IconsDirectories::new("addons".into(), "editor".into(), "rust".into(), BaseDirectory::ProjectFolder.into()),
         )),
@@ -96,8 +96,8 @@ Based on the last example, the GDExtension is configured as follows:
 - `EntrySymbol::GodotRustDefault` defaults to `"gdext_rust_init"`.
 - `minimum_compatibility` -> 4.1 and `reloatable =  true`
 - `WindowsABI::MSVC` uses `MSVC` as linker and environment when compiling for `Windows`.
-- `DefaultNodeIcon::NodeRust("rust")` uses the `NodeRust.svg` icon and finds it in the folder `"res://{base_dir}/rust"`.
-- IconsCopyStrategy: true, copy the `NodeRust.svg` file in path `"../godot/addons/rust"` relative to your crate and if it's there, don't copy it again.
+- `DefaultNodeIcon::NodeRust(NodeRust::Ferris, "rust")` uses the `NodeRustFerris.svg` icon and finds it in the folder `"res://{base_dir}/rust"`.
+- IconsCopyStrategy: true, copy the `NodeRust` (and true) file**s** in path `"../godot/addons/rust"` relative to your crate and if it's there, don't copy it again.
 - No custom nodes.
 - The directories will be laid out as following:
   - All icons will be found relative to `"res://addons"`.
@@ -113,7 +113,6 @@ The feature "simple_find_icons" is not a perfect way of finding the icons for ea
 
 * This crate is based on the [`gdextension_file` documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_file.html) from [`Godot`](https://godotengine.org/), and some snippets of the documentation (all written by [paddy-exe](https://github.com/paddy-exe)) are taken as are from their documentation, so they are as accurate as possible. The copyright notices for those files can be found directly in their [repository](https://github.com/godotengine/godot/blob/master/COPYRIGHT.txt), and are licensed under the [`CC BY 3.0`](https://creativecommons.org/licenses/by/3.0/) license. This applies to the doc comments on the serializable structs, so these are not relicensed under the licenses of this repository. The schema for the `.gdextension` file comes from the `Godot Engine` which is licensed under the [`MIT`](https://github.com/godotengine/godot/blob/master/LICENSE.txt) license.
 * This crate is meant to work in tandem with [`godot-rust`](https://godot-rust.github.io/) to give the most painless use of [`Rust`](https://www.rust-lang.org/) for `Godot`'s `GDExtension`, automating a helpful bunch of the work. It could be use on its own, just to generate the `.gdextension` file, but it works best with it.
-* The default GDExt Rust node's icon, `NodeRust.svg` is licensed under the [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/), copyright by [burritobandit28](https://github.com/burritobandit28), so it is not relicensed under the licenses of this repository.
 * The explanation on the `WindowsABI::LLVM` documentation, taken from the [`rustc` documentation](https://doc.rust-lang.org/rustc/platform-support/pc-windows-gnullvm.html), which is licensed under the [`MIT`](https://github.com/rust-lang/rust/blob/master/LICENSE-MIT) license.
 
 ## Asset licenses
