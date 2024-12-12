@@ -5,7 +5,7 @@ use std::{collections::HashMap, fs::File, io::{Result, Write}};
 use toml::Table;
 
 use super::GDExtension;
-use crate::{args::IconsConfig, NODE_RUST, NODE_RUST_FILENAME};
+use crate::{args::{DefaultNodeIcon, IconsConfig}, NODE_RUST, NODE_RUST_FILENAME};
 
 impl GDExtension {
     /// Generates the icons section of the [`GDExtension`].
@@ -24,7 +24,9 @@ impl GDExtension {
 
         let mut base_class_to_nodes = HashMap::<String, Vec<String>>::new();
 
-        find_children(&mut base_class_to_nodes)?;
+        if icons_config.default == DefaultNodeIcon::Node {
+            find_children(&mut base_class_to_nodes)?;
+        }
 
         for (icon, nodes) in base_class_to_nodes {
             for node in nodes {
