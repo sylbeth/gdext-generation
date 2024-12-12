@@ -87,6 +87,24 @@ YourStructName = "res://addons/rust/NodeRust.svg"
 
 Few lines of code for a customized automated `.gdextension` file, in conclusion.
 
+## Variables short explanation
+
+Based on the last example, the GDExtension is configured as follows:
+- `BaseDirectory::ProjectFolder` uses `"res://"` based paths.
+- `target_dir = "../rust/target"`: The target folder for the GDExtension crate is found at `"res://../rust/target"`.
+- `gdextension_path = "../godot/rust.gdextension`: Makes the file at `"Project/godot/rust.gdextension"` (if `"rust"` and `"godot"` are in a `"Project"` folder).
+- `EntrySymbol::GodotRustDefault` defaults to `"gdext_rust_init"`.
+- `minimum_compatibility` -> 4.1 and `reloatable =  true`
+- `WindowsABI::MSVC` uses `MSVC` as linker and environment when compiling for `Windows`.
+- `DefaultNodeIcon::NodeRust("rust")` uses the `NodeRust.svg` icon and finds it in the folder `"res://{base_dir}/rust"`.
+- IconsCopyStrategy: true, copy the `NodeRust.svg` file in path `"../godot/addons/rust"` relative to your crate and if it's there, don't copy it again.
+- No custom nodes.
+- The directories will be laid out as following:
+  - All icons will be found relative to `"res://addons"`.
+  - The editor icons will be located in `"res://addons/editor"`.
+  - The custom nodes will be located in `"res://addons/rust"`
+- None: No dependencies.
+
 # Limitations
 
 The feature "simple_find_icons" is not a perfect way of finding the icons for each GDExtension custom node, since it doesn't account for comments. If you experience problems due to this fact, due let us know, there may be a fix for it, but "find_icons" is in development to have a parser that will not fail, so consider changing features if you think it's worth it for you.
