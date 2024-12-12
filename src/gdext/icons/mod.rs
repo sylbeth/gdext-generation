@@ -73,20 +73,50 @@ impl GDExtension {
                 for node in nodes {
                     icons.insert(
                         node,
-                        format!(
-                            "{}{}.svg",
-                            &icons_config
-                                .directories
-                                .relative_directory
-                                .unwrap_or_default()
-                                .as_str(),
-                            (&icons_config.directories.base_directory)
-                                .join(&icons_config.directories.editor_directory)
-                                .join(&icon)
-                                .to_string_lossy()
-                                .replace('\\', "/")
-                        )
-                        .into(),
+                        match icons_config.default {
+                            DefaultNodeIcon::BaseClass => format!(
+                                "{}{}.svg",
+                                &icons_config
+                                    .directories
+                                    .relative_directory
+                                    .unwrap_or_default()
+                                    .as_str(),
+                                (&icons_config.directories.base_directory)
+                                    .join(&icons_config.directories.editor_directory)
+                                    .join(&icon)
+                                    .to_string_lossy()
+                                    .replace('\\', "/")
+                            )
+                            .into(),
+                            DefaultNodeIcon::Custom(ref custom_path) => format!(
+                                "{}{}",
+                                &icons_config
+                                    .directories
+                                    .relative_directory
+                                    .unwrap_or_default()
+                                    .as_str(),
+                                (&icons_config.directories.base_directory)
+                                    .join(&custom_path)
+                                    .to_string_lossy()
+                                    .replace('\\', "/")
+                            )
+                            .into(),
+                            DefaultNodeIcon::NodeRust(ref rust_path) => format!(
+                                "{}{}/{}",
+                                &icons_config
+                                    .directories
+                                    .relative_directory
+                                    .unwrap_or_default()
+                                    .as_str(),
+                                (&icons_config.directories.base_directory)
+                                    .join(&rust_path)
+                                    .to_string_lossy()
+                                    .replace('\\', "/"),
+                                NODE_RUST_FILENAME,
+                            )
+                            .into(),
+                            DefaultNodeIcon::Node => "ERROR".into(),
+                        },
                     );
                 }
             }
