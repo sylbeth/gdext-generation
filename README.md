@@ -115,3 +115,11 @@ The feature "simple_find_icons" is not a perfect way of finding the icons for ea
 * This crate is meant to work in tandem with [`godot-rust`](https://godot-rust.github.io/) to give the most painless use of [`Rust`](https://www.rust-lang.org/) for `Godot`'s `GDExtension`, automating a helpful bunch of the work. It could be use on its own, just to generate the `.gdextension` file, but it works best with it.
 * The default GDExt Rust node's icon, `NodeRust.svg` is licensed under the [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/), copyright by [burritobandit28](https://github.com/burritobandit28), so it is not relicensed under the licenses of this repository.
 * The explanation on the `WindowsABI::LLVM` documentation, taken from the [`rustc` documentation](https://doc.rust-lang.org/rustc/platform-support/pc-windows-gnullvm.html), which is licensed under the [`MIT`](https://github.com/rust-lang/rust/blob/master/LICENSE-MIT) license.
+
+## Asset licenses
+* The default GDExt Rust node's icons, `NodeRustSmall.svg`, `NodeRustLarge.svg` and `NodeRustFerris.svg` are licensed under the [CC BY 4.0 license](https://creativecommons.org/licenses/by/4.0/), copyright by [burritobandit28](https://github.com/burritobandit28), so they is not relicensed under the licenses of this repository. They are derived from the following works:
+
+* `Rust` `Ferris`, made by [Karen Rustad Tölva](rustacean.net) and licensed under the [`CC0 1.0 Universal`](https://creativecommons.org/publicdomain/zero/1.0/) license.
+* `Ferris` emoji, made by [Dzuk](https://weirder.earth/@dzuk) and licensed under the [`CC BY-NC-SA 4.0`](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
+* `Godot` logo, made by [Andrea Calabró](https://godotengine.org) and licensed under the [`CC BY 4.0`](https://creativecommons.org/licenses/by/4.0/) license.
+* `godot-rust` `Ferris`, licensed under the [`CC BY-NC-SA 4.0`](https://creativecommons.org/licenses/by-nc-sa/4.0) license, from [`godot-rust`](godot-rust.github.io).
