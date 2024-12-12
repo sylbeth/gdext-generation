@@ -36,6 +36,9 @@ pub mod prelude {
     };
 }
 
+#[cfg(all(feature = "find_icons", feature = "simple_find_icons"))]
+compile_error!("The features that enable the finding of icons are mutually exclusive, you either use the regex or the language parser, but you can't use both. Deactivate \"find_icons\" or \"simple_find_icons\".");
+
 /// SVG representation of the default GDExtension Rust node.
 ///
 /// # Author
