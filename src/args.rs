@@ -94,7 +94,7 @@ impl WindowsABI {
 }
 
 /// Node icon to use as the default node when none are specified.
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, PartialEq)]
 #[cfg(feature = "icons")]
 pub enum DefaultNodeIcon {
     /// When using a custom icon. The path used is relative to the base directory for icons.
