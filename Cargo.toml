@@ -7,11 +7,17 @@ edition = "2021"
 rustdoc-args = ["--document-private-items"]
 
 [dependencies]
+glob = { version = "0.3.1", optional = true }
 serde = { version = "1.0.215", features = ["serde_derive"] }
 toml = { version = "0.8.19", features = ["preserve_order"] }
+chumsky = { version = "0.9.3", optional = true }
 toml_edit = { version = "0.22.22", optional = true }
+regex = { version = "1.11.1", optional = true }
 
 [features]
 default = ["icons"]
 icons = []
+_find_icons = ["icons", "dep:glob"]
+find_icons = ["_find_icons", "dep:chumsky"]
+simple_find_icons = ["_find_icons", "dep:regex"]
 dependencies = ["dep:toml_edit"]
