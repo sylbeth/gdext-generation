@@ -44,6 +44,9 @@ pub mod prelude {
 #[cfg(feature = "icons")]
 const NODE_RUST: &str = include_str!("assets/NodeRust.svg");
 
+/// Name of the NodeRust.svg file.
+pub const NODE_RUST_FILENAME: &str = "NodeRust.svg";
+
 /// Generates the `.gdextension` file for the crate using all the necessary information.
 ///
 /// # Parameters
