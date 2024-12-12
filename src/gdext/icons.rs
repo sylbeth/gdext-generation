@@ -1,11 +1,11 @@
 //! Module for the generation of the icons section of the `.gdextension` file.
 
-use std::{collections::HashMap, io::Result};
+use std::{collections::HashMap, fs::File, io::{Result, Write}};
 
 use toml::Table;
 
 use super::GDExtension;
-use crate::args::IconsConfig;
+use crate::{args::IconsConfig, NODE_RUST, NODE_RUST_FILENAME};
 
 impl GDExtension {
     /// Generates the icons section of the [`GDExtension`].
@@ -60,6 +60,10 @@ impl GDExtension {
                     .into(),
                 );
             }
+        }
+        let path_node_rust = icons_config.copy_strategy.path_node_rust.join(NODE_RUST_FILENAME);
+        if icons_config.copy_strategy.copy_node_rust & (icons_config.copy_strategy.force_copy | !path_node_rust.exists()) {
+            File::create(path_node_rust)?.write_all(NODE_RUST.as_bytes())?;
         }
 
         self.icons = Some(icons);

@@ -99,10 +99,10 @@ impl WindowsABI {
 pub enum DefaultNodeIcon {
     /// When using a custom icon. The path used is relative to the base directory for icons.
     Custom(PathBuf),
-    /// When using the icon of the base class of the node.
+    /// When using the icon of the base class of the node. They will always be searched for in the editor directory for icons.
     BaseClass,
-    /// When using the [`NODE_RUST`] icon.
-    NodeRust,
+    /// When using the [`NODE_RUST`] icon. The path used is relative to the to the base directory for icons, but it's only to the folder that contains the `NodeRust.svg`, it must NOT have "NodeRust.svg" in it.
+    NodeRust(PathBuf),
     /// When using the default Godot node icon.
     #[default]
     Node,
@@ -114,7 +114,7 @@ pub enum DefaultNodeIcon {
 pub struct IconsCopyStrategy {
     /// Whether or not to copy the NodeRust.svg file.
     pub copy_node_rust: bool,
-    /// Path to the icon copied relative to the icons base directory.
+    /// Path to the folder where the icon will be copied relative to the *crate folder*.
     pub path_node_rust: PathBuf,
     /// Whether or not to copy if the files already exist.
     pub force_copy: bool,
@@ -127,7 +127,7 @@ impl IconsCopyStrategy {
     /// # Parameters
     ///
     /// * `copy_node_rust` - Whether or not to copy the NodeRust.svg file.
-    /// * `path_node_rust` - Path to the icon copied relative to the icons base directory.
+    /// * `path_node_rust` - Path to the icon copied relative to the *crate folder*.
     /// * `force_copy` - Whether or not to copy if the files already exist.
     ///
     /// # Returns
