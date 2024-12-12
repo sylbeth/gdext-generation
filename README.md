@@ -7,7 +7,9 @@ To install this crate as a build dependency in your own crate, run: `cargo add -
 
 # Usage
 
-To get all the functionality of this crate, in your `build.rs` file on the root of your crate (not your `src/`), write the following:
+## build.rs call
+
+To get all the functionality of this crate, in your `build.rs` file on the root of your crate (not your `src/`), write the following (parameters may vary depending on the features you've opt in or out of):
 
 ```rust
 use gdext_gen::generate_gdextension_file;
@@ -33,6 +35,56 @@ fn main() -> Result<()> {
 To compile for `Android`, `Web`, `MacOS` or `iOS` please refer to the [`godot-rust` book](https://godot-rust.github.io/book/toolchain/index.html).
 
 It's worth noting that one can configure when the build script will be run, so it's sensible to change it were one not to need it running at every source file change.
+
+## Variable initialization
+
+An example of variable initialization to have parity with the `godot-rust` example is the following (with all the primaty features enabled):
+
+```rust
+fn main() -> Result<()> {
+    generate_gdextension_file(
+        BaseDirectory::ProjectFolder.into(),
+        Some("../rust/target".into()),
+        Some("../godot/rust.gdextension".into()),
+        Some(Configuration::new(
+            EntrySymbol::GodotRustDefault,
+            Some((4, 1)),
+            None,
+            true,
+            false,
+        )),
+        Some(WindowsABI::MSVC),
+        Some(IconsConfig::new(
+            DefaultNodeIcon::NodeRust("rust".into()),
+            IconsCopyStrategy::new(true, "../godot/addons/rust".into(), false),
+            None,
+            IconsDirectories::new("addons".into(), "editor".into(), "rust".into(), BaseDirectory::ProjectFolder.into())
+        )),
+    )?;
+
+    Ok(())
+}
+```
+
+This results in a "rust.gdextension" file in "Project/godot", which contains the following:
+
+```toml
+[configuration]
+entry_symbol = "gdext_rust_init"
+compatibility_minimum = 4.1
+reloadable = true
+
+[libraries]
+"target.mode" = "res://../rust/target/mode/library.file"
+"target.mode.architecture" = "res://../rust/target/target-triple/mode/library.file"
+...
+
+[icons]
+YourStructName = "res://addons/rust/NodeRust.svg"
+...
+```
+
+Few lines of code for a customized automated `.gdextension` file, in conclusion.
 
 # Limitations
 
