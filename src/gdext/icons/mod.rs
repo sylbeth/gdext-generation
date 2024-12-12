@@ -59,7 +59,7 @@ impl GDExtension {
         let mut icons = Table::new();
 
         #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
-        if icons_config.default == DefaultNodeIcon::Node {
+        if icons_config.default != DefaultNodeIcon::Node {
             let mut base_class_to_nodes = HashMap::<String, Vec<String>>::new();
 
             find_children(&mut base_class_to_nodes)?;
