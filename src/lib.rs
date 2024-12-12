@@ -2,6 +2,7 @@
 
 use std::{
     env::var,
+    ffi::OsString,
     fs::File,
     io::{Error, ErrorKind, Result, Write},
     path::PathBuf,
@@ -98,8 +99,28 @@ pub fn generate_gdextension_file(
     let windows_abi = windows_abi.unwrap_or(WindowsABI::MSVC);
 
     // Defaults to the provided path in the `godot-rust` book.
-    let gdextension_path =
-        gdextension_path.unwrap_or(PathBuf::from_iter(["..", "godot", "rust.gdextension"]));
+    let gdextension_path = if let Some(gdextension_path) = gdextension_path {
+        if let Some(extension) = gdextension_path.extension() {
+            if extension != "gdextension" {
+                return Err(Error::new(
+                    ErrorKind::InvalidInput,
+                    "The extension of the file must be gdextension.",
+                ));
+            }
+        } else if gdextension_path
+            .file_name()
+            .unwrap_or(OsString::from("").as_os_str())
+            != ".gdextension"
+        {
+            return Err(Error::new(
+                ErrorKind::InvalidInput,
+                "The path to the gdextension file must lead to .gdextension a file.",
+            ));
+        }
+        gdextension_path
+    } else {
+        PathBuf::from_iter(["..", "godot", "rust.gdextension"])
+    };
 
     let mut gdextension = GDExtension::from_config(configuration);
 
