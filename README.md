@@ -107,6 +107,14 @@ Based on the last example, the GDExtension is configured as follows:
   - The custom nodes will be located in `"res://addons/rust"`
 - None: No dependencies.
 
+# Features
+
+- `icons` - Allows the use of custom icons and the copying of `Rust`'s default icons for the generation of the `icons` section of the `.gdextension` file.
+- `find_icons` - Allows for the finding of the names of the custom implemented nodes and their subclasses using regex to automate the `icons` section generation process.
+- `dependencies` - Allows for the generation of the `dependencies` section of the `.gdextension` file.
+- `checked_generation` - Adds a parameter to the function call to allow for specifying whether the `.gdextension` file should always be copied or only when it doesn't exist. This option is mutually exclusive with `forced_generation`. If none is chosen, it defaults to writing it only when it doesn't exist.
+- `forced_generation` - Ensures the `.gdextension` file is always written regardless of whether it exists or not. This option is mutually exclusive with `checked_generation`. If none is chosen, it defaults to writing it only when it doesn't exist.
+
 # Limitations
 
 The feature "find_icons" uses regex to do its work. It's not a perfect way of finding the icons for each GDExtension custom node, but it always resets after each file, so one file's contents failing can only affect itself. It does so by searching for lines that contain both `"base"` and `"="`, then trying to find the name of the base. Same with `"struct"`. The only ways it could fail is if that exact appearance is in a comment or string, has comments in between or extends over more than a line. I believe these to be reasonable compromises, as searching for more than these would only make the code slower, and any reasonably formatted code would have `"base ="` in the same line and for `"base = NameBase"`, or struct `"NameStruct {"` to appear on their own in a comment is hard enough, and the auto found icons can ALWAYS be overriden by custom icons that just happen to be the editor's. In any case, if one thinks otherwise, here are other ways to implement this. 1: A pretty barebones Rust parser, 2: Preprocessing strings and comments in a file before doing the search, 3: Searching for the `impl INameOfBase for StructName`. If you experience problems due to this fact, due let us know, there may be a fix for it.
