@@ -15,7 +15,7 @@ toml_edit = { version = "0.22.22", optional = true }
 regex = { version = "1.11.1", optional = true }
 
 [features]
-default = ["icons"]
+default = ["checked_generation", "icons"]
 icons = []
 find_icons = ["icons", "dep:glob", "dep:regex"]
 dependencies = ["dep:toml_edit"]
