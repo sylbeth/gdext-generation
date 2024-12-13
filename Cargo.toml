@@ -2,6 +2,12 @@
 name = "gdext-gen"
 version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "Autogenerates a .gdextension file for using Rust to make a Godot GDExtension. It provides all the libraries pathfinding and a way to automatically link the default icons to the new defined classes based on the class they inherit from, and also a way to manually link a specific class with a custom icon."
+repository = "https://github.com/sylbeth/gdext-generation"
+readme = "README.md"
+keywords = ["gamedev", "godot", "gdextension", "gdext"]
+categories = ["api-bindings", "game-development"]
 
 [package.metadata.docs.rs]
 rustdoc-args = ["--document-private-items"]
