@@ -10,22 +10,17 @@ use toml::Table;
 use super::GDExtension;
 use crate::{args::IconsConfig, NODES_RUST, NODES_RUST_FILENAMES};
 
-#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
-use crate::args::DefaultNodeIcon;
-#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
-use glob::glob;
-#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
-use std::collections::HashMap;
-
-#[cfg(feature = "simple_find_icons")]
-use std::io::{BufRead, BufReader};
-
-#[cfg(feature = "simple_find_icons")]
-use regex::{Match, Regex};
-
 #[cfg(feature = "find_icons")]
-#[warn(clippy::todo)]
-mod parser;
+use crate::args::DefaultNodeIcon;
+#[cfg(feature = "find_icons")]
+use glob::glob;
+#[cfg(feature = "find_icons")]
+use regex::{Match, Regex};
+#[cfg(feature = "find_icons")]
+use std::{
+    collections::HashMap,
+    io::{BufRead, BufReader},
+};
 
 /*
 const base_checkers: [&str; 2] = ["base", "="];
@@ -63,7 +58,7 @@ impl GDExtension {
     pub fn generate_icons(&mut self, icons_config: IconsConfig) -> Result<&mut Self> {
         let mut icons = Table::new();
 
-        #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+        #[cfg(feature = "find_icons")]
         if icons_config.default != DefaultNodeIcon::Node {
             let mut base_class_to_nodes = HashMap::<String, Vec<String>>::new();
 
@@ -143,19 +138,32 @@ impl GDExtension {
                 );
             }
         }
-        if icons_config.copy_strategy.copy_node_rust {
+
+        #[allow(unused_mut)]
+        let mut copy_files = icons_config.copy_strategy.copy_all;
+        #[cfg(feature = "find_icons")]
+        {
+            copy_files |= icons_config.copy_strategy.copy_node_rust;
+        }
+
+        if copy_files {
             let base_directory_path = icons_config.copy_strategy.path_node_rust;
             let mut nodes_rust = Vec::new();
-            
+
             if icons_config.copy_strategy.copy_all {
                 nodes_rust.extend(NODES_RUST_FILENAMES.into_iter().zip(NODES_RUST));
             } else {
-                #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
-                if let DefaultNodeIcon::NodeRust(node_rust, _) = icons_config.default {
-                    nodes_rust.push((NODES_RUST_FILENAMES[node_rust as usize], NODES_RUST[node_rust as usize]));
+                #[cfg(feature = "find_icons")]
+                if icons_config.copy_strategy.copy_node_rust {
+                    if let DefaultNodeIcon::NodeRust(node_rust, _) = icons_config.default {
+                        nodes_rust.push((
+                            NODES_RUST_FILENAMES[node_rust as usize],
+                            NODES_RUST[node_rust as usize],
+                        ));
+                    }
                 }
             }
-            
+
             for (file_name, node_rust) in nodes_rust {
                 let path_node_rust = (&base_directory_path).join(file_name);
                 if icons_config.copy_strategy.force_copy | !path_node_rust.exists() {
@@ -180,58 +188,56 @@ impl GDExtension {
 ///
 /// * [`Ok`] - If the `base_class_to_nodes` [`HashMap`] could be filled.
 /// * [`Err`] - Otherwise.
-#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+#[cfg(feature = "find_icons")]
 fn find_children(base_class_to_nodes: &mut HashMap<String, Vec<String>>) -> Result<()> {
-    #[cfg(feature = "simple_find_icons")]
-    {
-        // Only works if base = BaseClass contains no comments in between.
-        let base_class_regex =
-            Regex::new(r"base(\s+)?\=(\s+)?[\w|_|\d]+").expect("Invalid regex pattern.");
-        // Only works if struct StructName contains no comments in between.
-        let struct_regex = Regex::new(r"struct(\s+)?[\w|_|\d]+").expect("Invalid regex pattern.");
+    // Only works if base = BaseClass contains no comments in between.
+    let base_class_regex =
+        Regex::new(r"base\s*\=\s*[\w_\d]+\s*[),]").expect("Invalid regex pattern.");
+    // Only works if struct StructName contains no comments in between.
+    let struct_regex = Regex::new(r"struct\s*[\w_\d]+\s*[{;<]").expect("Invalid regex pattern.");
 
-        let mut base_class = String::new();
-        let mut found_base;
+    let mut base_class = String::new();
+    let mut struct_class;
+    let mut found_base;
 
-        for path_glob in glob("./src/**/*.rs").unwrap() {
-            let path;
-            match path_glob {
-                Ok(pathbuf) => path = pathbuf,
-                Err(_) => continue,
-            }
-            found_base = false;
-            for line in BufReader::new(File::open(path)?).lines() {
-                let line: String = line?;
-                if line.contains("base") & line.contains("=") {
-                    base_class =
-                        base_class_regex
-                            .find(&line)
-                            .map_or("ERROR".into(), |base_class_match| {
-                                Match::as_str(&base_class_match)
-                                    .replace("base", "")
-                                    .replace('=', "")
-                                    .trim()
-                                    .into()
-                            });
-                    if !base_class_to_nodes.contains_key(&base_class) {
-                        base_class_to_nodes.insert(base_class.clone(), Vec::new());
-                    }
-                    found_base = true;
-                } else if found_base & !line.starts_with("///") & line.contains("struct") {
-                    base_class_to_nodes
-                        .get_mut(&base_class)
-                        .expect("The map doesn't contain the key that was just pushed to it.")
-                        .push(struct_regex.find(&line).map_or(
-                            "ERROR".into(),
-                            |struct_class_match| {
-                                Match::as_str(&struct_class_match)
-                                    .replace("struct", "")
-                                    .trim()
-                                    .into()
-                            },
-                        ));
-                    found_base = false;
+    for path_glob in glob("./src/**/*.rs").unwrap() {
+        let path;
+        match path_glob {
+            Ok(pathbuf) => path = pathbuf,
+            Err(_) => continue,
+        }
+        found_base = false;
+        for line in BufReader::new(File::open(path)?).lines() {
+            let line: String = line?;
+            if !line.starts_with("///") & line.contains("base") & line.contains("=") {
+                base_class = if let Some(base_class_match) = base_class_regex.find(&line) {
+                    Match::as_str(&base_class_match)
+                        .replace("base", "")
+                        .replace('=', "")
+                } else {
+                    continue;
+                };
+                // Eliminate the , or ).
+                base_class.pop();
+                let base_class_trimmed = base_class.trim();
+                if !base_class_to_nodes.contains_key(base_class_trimmed) {
+                    base_class_to_nodes.insert(base_class_trimmed.to_owned(), Vec::new());
                 }
+                found_base = true;
+            } else if found_base & !line.starts_with("///") & line.contains("struct") {
+                struct_class = if let Some(struct_class_match) = struct_regex.find(&line) {
+                    Match::as_str(&struct_class_match).replace("struct", "")
+                } else {
+                    continue;
+                };
+                // Eliminate the ;, { or <.
+                struct_class.pop();
+                let struct_class_trimmed = struct_class.trim();
+                base_class_to_nodes
+                    .get_mut(&base_class)
+                    .expect("The map doesn't contain the key that was just pushed to it.")
+                    .push(struct_class_trimmed.into());
+                found_base = false;
             }
         }
     }

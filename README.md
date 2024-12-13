@@ -109,7 +109,9 @@ Based on the last example, the GDExtension is configured as follows:
 
 # Limitations
 
-The feature "simple_find_icons" is not a perfect way of finding the icons for each GDExtension custom node, since it doesn't account for comments. If you experience problems due to this fact, due let us know, there may be a fix for it, but "find_icons" is in development to have a parser that will not fail, so consider changing features if you think it's worth it for you.
+The feature "find_icons" uses regex to do its work. It's not a perfect way of finding the icons for each GDExtension custom node, but it always resets after each file, so one file's contents failing can only affect itself. It does so by searching for lines that contain both `"base"` and `"="`, then trying to find the name of the base. Same with `"struct"`. The only ways it could fail is if that exact appearance is in a comment or string, has comments in between or extends over more than a line. I believe these to be reasonable compromises, as searching for more than these would only make the code slower, and any reasonably formatted code would have `"base ="` in the same line and for `"base = NameBase"`, or struct `"NameStruct {"` to appear on their own in a comment is hard enough, and the auto found icons can ALWAYS be overriden by custom icons that just happen to be the editor's. In any case, if one thinks otherwise, here are other ways to implement this. 1: A pretty barebones Rust parser, 2: Preprocessing strings and comments in a file before doing the search, 3: Searching for the `impl INameOfBase for StructName`. If you experience problems due to this fact, due let us know, there may be a fix for it.
+
+There is also an issue with structs that use generics, or structs that don't follow the standard. These, may not be found at all, so it's best to just add them as custom.
 
 # Acknowledgements
 

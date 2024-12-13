@@ -96,7 +96,7 @@ impl WindowsABI {
 /// Represents one of the three avilable default nodes for Rust.
 #[derive(Default, Debug, Clone, Copy, PartialEq)]
 #[repr(usize)]
-#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+#[cfg(feature = "find_icons")]
 pub enum NodeRust {
     /// Small version of the icon based on the `godot-rust` logo.
     #[default]
@@ -109,7 +109,7 @@ pub enum NodeRust {
 
 /// Node icon to use as the default node when none are specified.
 #[derive(Default, Debug, Clone, PartialEq)]
-#[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+#[cfg(feature = "find_icons")]
 pub enum DefaultNodeIcon {
     /// When using a custom icon. The path used is relative to the base directory for icons.
     Custom(PathBuf),
@@ -126,7 +126,8 @@ pub enum DefaultNodeIcon {
 #[derive(Debug, Default)]
 #[cfg(feature = "icons")]
 pub struct IconsCopyStrategy {
-    /// Whether or not to copy the `NodeRust` file.
+    /// Whether or not to copy the `NodeRust` file. Available with "find_icons" feature.
+    #[cfg(feature = "find_icons")]
     pub copy_node_rust: bool,
     /// Whether or not to copy all the `NodeRust` files.
     pub copy_all: bool,
@@ -142,7 +143,7 @@ impl IconsCopyStrategy {
     ///
     /// # Parameters
     ///
-    /// * `copy_node_rust` - Whether or not to copy the NodeRust.svg file.
+    /// * `copy_node_rust` - Whether or not to copy the NodeRust.svg file. Available with "find_icons" feature.
     /// * `copy_all` - Whether or not to copy all the `NodeRust` files.
     /// * `path_node_rust` - Path to the icon copied relative to the *crate folder*.
     /// * `force_copy` - Whether or not to copy if the files already exist.
@@ -150,8 +151,14 @@ impl IconsCopyStrategy {
     /// # Returns
     ///
     /// The [`IconsCopyStrategy`] instancte with its fields initialized.
-    pub fn new(copy_node_rust: bool, copy_all: bool, path_node_rust: PathBuf, force_copy: bool) -> Self {
+    pub fn new(
+        #[cfg(feature = "find_icons")] copy_node_rust: bool,
+        copy_all: bool,
+        path_node_rust: PathBuf,
+        force_copy: bool,
+    ) -> Self {
         Self {
+            #[cfg(feature = "find_icons")]
             copy_node_rust,
             copy_all,
             path_node_rust,
@@ -164,8 +171,20 @@ impl IconsCopyStrategy {
     /// # Returns
     ///
     /// The same [`IconsCopyStrategy`] it was passed to it with `copy_node_rust` set to `true`.
+    #[cfg(feature = "find_icons")]
     pub fn copy_node_rust(mut self) -> Self {
         self.copy_node_rust = true;
+
+        self
+    }
+
+    /// Changes the `copy_all` field to `true` and returns the same struct.
+    ///
+    /// # Returns
+    ///
+    /// The same [`IconsCopyStrategy`] it was passed to it with `copy_node_rust` set to `true`.
+    pub fn copy_all(mut self) -> Self {
+        self.copy_all = true;
 
         self
     }
@@ -243,8 +262,8 @@ impl IconsDirectories {
 #[derive(Default, Debug)]
 #[cfg(feature = "icons")]
 pub struct IconsConfig {
-    /// The default icon to use when no specified icon was provided.
-    #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+    /// The default icon to use when no specified icon was provided. Available with "find_icons" feature.
+    #[cfg(feature = "find_icons")]
     pub default: DefaultNodeIcon,
     /// The [`IconsCopyStrategy`] for the files needed for the icons to be displayed.
     pub copy_strategy: IconsCopyStrategy,
@@ -260,7 +279,7 @@ impl IconsConfig {
     ///
     /// # Parameters
     ///
-    /// * `default` - The default icon to use when no specified icon was provided. If none of the find_icons features are activated, it's not there, and `Godot`'s Node is assumed instead.
+    /// * `default` - The default icon to use when no specified icon was provided. If none of the find_icons features are activated, it's not there, and `Godot`'s Node is assumed instead. Available with feature "find_icons".
     /// * `copy_strategy` - The [`IconsCopyStrategy`] for the files needed for the icons to be displayed.
     /// * `custom_icons` - The custom icons to use. It contains pairs of `ClassName: IconPath`, where IconPath is the path **relative** to the `custom_directory` specified in `directories`.
     /// * `directories` - The **relative** paths of the directories where the icons are stored.
@@ -269,13 +288,13 @@ impl IconsConfig {
     ///
     /// The [`IconsConfig`] instancte with its fields initialized.
     pub fn new(
-        #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))] default: DefaultNodeIcon,
+        #[cfg(feature = "find_icons")] default: DefaultNodeIcon,
         copy_strategy: IconsCopyStrategy,
         custom_icons: Option<HashMap<String, PathBuf>>,
         directories: IconsDirectories,
     ) -> Self {
         Self {
-            #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+            #[cfg(feature = "find_icons")]
             default,
             copy_strategy,
             custom_icons,

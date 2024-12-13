@@ -25,7 +25,7 @@ pub mod args;
 pub mod features;
 pub mod gdext;
 pub mod prelude {
-    #[cfg(any(feature = "find_icons", feature = "simple_find_icons"))]
+    #[cfg(feature = "find_icons")]
     pub use super::args::{DefaultNodeIcon, NodeRust};
     #[cfg(feature = "icons")]
     pub use super::args::{IconsConfig, IconsCopyStrategy, IconsDirectories};
@@ -37,8 +37,6 @@ pub mod prelude {
     };
 }
 
-#[cfg(all(feature = "find_icons", feature = "simple_find_icons"))]
-compile_error!("The features that enable the finding of icons are mutually exclusive, you either use the regex or the language parser, but you can't use both. Deactivate \"find_icons\" or \"simple_find_icons\".");
 #[cfg(all(feature = "checked_generation", feature = "forced_generation"))]
 compile_error!("The features that select the kind of generation are mutually exclusive, you either use the checked or the forced one, but you can't use both. Deactivate \"checked_generation\" or \"forced_generation\".");
 

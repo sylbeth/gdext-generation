@@ -19,7 +19,7 @@ pub struct GDExtension {
     configuration: Configuration,
     /// Libraries section of the `.gdextension` file. Links the `godot` target to the compiled [`GDExtension`] libraries. It contains relationships of `godot_target: GDExtensionCdylibPath`.
     libraries: Table,
-    /// Icons section of the `.gdextension` file. Links the [`GDExtension`] classes to the files to use as their editor icons. It contains relationships of `ClassName: IconPath`.
+    /// Icons section of the `.gdextension` file. Links the [`GDExtension`] classes to the files to use as their editor icons. It contains relationships of `ClassName: IconPath`. Available with feature "icons".
     #[cfg(feature = "icons")]
     icons: Option<Table>,
     // The dependencies section is not needed anymore since it's parsed through toml_edit.
