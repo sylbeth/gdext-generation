@@ -61,7 +61,7 @@ const NODES_RUST: [&str; 3] = [
 pub const NODES_RUST_FILENAMES: [&str; 3] = [
     "NodeRustSmall.svg",
     "NodeRustLarge.svg",
-    "NodeRustFerris.svg"
+    "NodeRustFerris.svg",
 ];
 
 /// Generates the `.gdextension` file for the crate using all the necessary information.
