@@ -16,7 +16,7 @@ use gdext_gen::generate_gdextension_file;
 
 fn main() {
     // All your variable initialization and setup goes here.
-    generate_gdextension_file(base_dir, target_dir, gdextension_path, configuration, windows_abi, icons_configuration, dependencies);
+    generate_gdextension_file(base_dir, target_dir, gdextension_path, force_generation, configuration, windows_abi, icons_configuration, dependencies);
 }
 ```
 
@@ -28,7 +28,7 @@ use gdext_gen::generate_gdextension_file;
 
 fn main() -> Result<()> {
     // All your variable initialization and setup goes here.
-    generate_gdextension_file(base_dir, target_dir, gdextension_path, configuration, windows_abi, icons_configuration, dependencies)?;
+    generate_gdextension_file(base_dir, target_dir, gdextension_path, force_generation, configuration, windows_abi, icons_configuration, dependencies)?;
 }
 ```
 
@@ -38,7 +38,7 @@ It's worth noting that one can configure when the build script will be run, so i
 
 ## Variable initialization
 
-An example of variable initialization to have parity with the `godot-rust` example is the following (with all the primaty features enabled):
+An example of variable initialization to have parity with the `godot-rust` example is the following (with all the primaty features enabled and `checked_generation` chosen):
 
 ```rust
 fn main() -> Result<()> {
@@ -46,6 +46,7 @@ fn main() -> Result<()> {
         BaseDirectory::ProjectFolder.into(),
         Some("../rust/target".into()),
         Some("../godot/rust.gdextension".into()),
+        true,
         Some(Configuration::new(
             EntrySymbol::GodotRustDefault,
             Some((4, 1)),
@@ -93,6 +94,7 @@ Based on the last example, the GDExtension is configured as follows:
 - `BaseDirectory::ProjectFolder` uses `"res://"` based paths.
 - `target_dir = "../rust/target"`: The target folder for the GDExtension crate is found at `"res://../rust/target"`.
 - `gdextension_path = "../godot/rust.gdextension`: Makes the file at `"Project/godot/rust.gdextension"` (if `"rust"` and `"godot"` are in a `"Project"` folder).
+- `true` here means the `.gdextension` will be rewritten even if the file already exists.
 - `EntrySymbol::GodotRustDefault` defaults to `"gdext_rust_init"`.
 - `minimum_compatibility` -> 4.1 and `reloatable =  true`
 - `WindowsABI::MSVC` uses `MSVC` as linker and environment when compiling for `Windows`.

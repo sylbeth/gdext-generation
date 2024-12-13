@@ -39,6 +39,8 @@ pub mod prelude {
 
 #[cfg(all(feature = "find_icons", feature = "simple_find_icons"))]
 compile_error!("The features that enable the finding of icons are mutually exclusive, you either use the regex or the language parser, but you can't use both. Deactivate \"find_icons\" or \"simple_find_icons\".");
+#[cfg(all(feature = "checked_generation", feature = "forced_generation"))]
+compile_error!("The features that select the kind of generation are mutually exclusive, you either use the checked or the forced one, but you can't use both. Deactivate \"checked_generation\" or \"forced_generation\".");
 
 /// SVG representations of the default GDExtension Rust nodes.
 ///
@@ -69,6 +71,7 @@ pub const NODES_RUST_FILENAMES: [&str; 3] = [
 /// * `base_dir` - The base directory to use for the paths in the `.gdextension` file.
 /// * `target_dir` - Path to the target directory of the crate, **relative** to the *`base_dir`*. If [`None`] is provided, defaults to `"../rust/target"`, the path provided in the `godot-rust` book.
 /// * `gdextension_path` - Path where the `.gdextension` file will be written in, **relative** to the *crate folder*. If [`None`] is provided, defaults to `"../godot/rust.gdextension"`, the path provided in the `godot-rust` book.
+/// * `force_generation` - Whether or not to generate the file even if it already exists. Available with feature "checked_generation".
 /// * `configuration` - [`Configuration`] section of the `.gdextension` file. If [`None`] is provided, defaults to the one found in the `godot-rust` book.
 /// * `windows_abi` - `ABI` used when compiling the crate for `Windows`. If [`None`] is provided, defaults to [`MSVC`](WindowsABI::MSVC), the default for `Rust` in `Windows`.
 /// * `icons_configuration` - Configuration for the generation of the icon section of the `.gdextension` file. If [`None`] is provided, it doesn't generate the icons section. Available with feature "icons".
@@ -81,6 +84,7 @@ pub fn generate_gdextension_file(
     base_dir: BaseDirectory,
     target_dir: Option<PathBuf>,
     gdextension_path: Option<PathBuf>,
+    #[cfg(feature = "checked_generation")] force_generation: bool,
     configuration: Option<Configuration>,
     windows_abi: Option<WindowsABI>,
     #[cfg(feature = "icons")] icons_configuration: Option<IconsConfig>,
@@ -88,24 +92,9 @@ pub fn generate_gdextension_file(
 ) -> Result<()> {
     // Default values for the parameters.
 
-    // Name of the library in snake_case.
-    let lib_name =
-        var("CARGO_PKG_NAME").map_or("rust".into(), |entry_symbol| entry_symbol.replace('-', "_"));
-
-    // Defaults to the provided path in the `godot-rust` book.
-    let target_dir = target_dir.unwrap_or(PathBuf::from_iter(["..", "rust", "target"]));
-
-    // Defaults to the provided configuration in the `godot-rust`.
-    let configuration = configuration.unwrap_or(Configuration::new(
-        EntrySymbol::GodotRustDefault,
-        Some((4, 1)),
-        None,
-        true,
-        false,
-    ));
-
-    // Defaults to `MSVC` since it's `Rust`'s default too.
-    let windows_abi = windows_abi.unwrap_or(WindowsABI::MSVC);
+    // If the generation is neither forced nor checked, it's assumed to only be written when no file exists.
+    #[cfg(not(any(feature = "forced_generation", feature = "checked_generation")))]
+    let force_generation = true;
 
     // Defaults to the provided path in the `godot-rust` book.
     let gdextension_path = if let Some(gdextension_path) = gdextension_path {
@@ -130,6 +119,31 @@ pub fn generate_gdextension_file(
     } else {
         PathBuf::from_iter(["..", "godot", "rust.gdextension"])
     };
+
+    // If the generation is not forced and the file exists.
+    #[cfg(not(feature = "forced_generation"))]
+    if !force_generation & gdextension_path.exists() {
+        return Ok(());
+    }
+
+    // Name of the library in snake_case.
+    let lib_name =
+        var("CARGO_PKG_NAME").map_or("rust".into(), |entry_symbol| entry_symbol.replace('-', "_"));
+
+    // Defaults to the provided path in the `godot-rust` book.
+    let target_dir = target_dir.unwrap_or(PathBuf::from_iter(["..", "rust", "target"]));
+
+    // Defaults to the provided configuration in the `godot-rust`.
+    let configuration = configuration.unwrap_or(Configuration::new(
+        EntrySymbol::GodotRustDefault,
+        Some((4, 1)),
+        None,
+        true,
+        false,
+    ));
+
+    // Defaults to `MSVC` since it's `Rust`'s default too.
+    let windows_abi = windows_abi.unwrap_or(WindowsABI::MSVC);
 
     let mut gdextension = GDExtension::from_config(configuration);
 
