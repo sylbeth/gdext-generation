@@ -74,7 +74,7 @@ pub enum WindowsABI {
     MSVC,
     /// The `MinGW` compiler (`MSYS2` port of `GCC`).
     MinGW,
-    /// Similar to `MinGW` but using `UCRT` as the runtime and various `LLVM` tools/libraries instead of `GCC/Binutils`. More information: https://doc.rust-lang.org/rustc/platform-support/pc-windows-gnullvm.html
+    /// Similar to `MinGW` but using `UCRT` as the runtime and various `LLVM` tools/libraries instead of `GCC/Binutils`. More information: <https://doc.rust-lang.org/rustc/platform-support/pc-windows-gnullvm.html>
     LLVM,
 }
 
@@ -115,7 +115,8 @@ pub enum DefaultNodeIcon {
     Custom(PathBuf),
     /// When using the icon of the base class of the node. They will always be searched for in the editor directory for icons.
     BaseClass,
-    /// When using the [`NODE_RUST`] icon. The path used is relative to the to the base directory for icons, but it's only to the folder that contains the `NodeRust` files, it must NOT have the filename in it.
+    #[allow(rustdoc::private_intra_doc_links)]
+    /// When using one of the [`NODES_RUST`](crate::NODES_RUST) icon. The path used is relative to the to the base directory for icons, but it's only to the folder that contains the `NodeRust` files, it must NOT have the filename in it.
     NodeRust(NodeRust, PathBuf),
     /// When using the default Godot node icon.
     #[default]

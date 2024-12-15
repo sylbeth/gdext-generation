@@ -12,7 +12,7 @@ To install this crate as a build dependency in your own crate, run: `cargo add -
 To get all the functionality of this crate, in your `build.rs` file on the root of your crate (not your `src/`), write the following (parameters may vary depending on the features you've opt in or out of):
 
 ```rust
-use gdext_gen::generate_gdextension_file;
+use gdext_gen::prelude::*;
 
 fn main() {
     // All your variable initialization and setup goes here.
@@ -24,7 +24,7 @@ The parameters of this function and how it works are documented in the docs. It 
 
 ```rust
 use std::io::Result;
-use gdext_gen::generate_gdextension_file;
+use gdext_gen::prelude::*;
 
 fn main() -> Result<()> {
     // All your variable initialization and setup goes here.
@@ -41,6 +41,8 @@ It's worth noting that one can configure when the build script will be run, so i
 An example of variable initialization to have parity with the `godot-rust` example is the following (with all the primaty features enabled and `checked_generation` chosen):
 
 ```rust
+use std::io::Result;
+use gdext_gen::prelude::*;
 fn main() -> Result<()> {
     generate_gdextension_file(
         BaseDirectory::ProjectFolder.into(),
