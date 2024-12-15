@@ -179,6 +179,21 @@ impl IconsCopyStrategy {
         self
     }
 
+    /// Changes the `path_node_rust` field to the one indicated and returns the same struct.
+    /// 
+    /// # Parameters
+    /// 
+    /// * `path_node_rust` - Path to the icon copied relative to the *crate folder*.
+    ///
+    /// # Returns
+    ///
+    /// The same [`IconsCopyStrategy`] it was passed to it with `path_node_rust` set to one passed by parameter.
+    pub fn path_node_rust(mut self, path_node_rust: PathBuf) -> Self {
+        self.path_node_rust = path_node_rust;
+
+        self
+    }
+
     /// Changes the `copy_all` field to `true` and returns the same struct.
     ///
     /// # Returns
