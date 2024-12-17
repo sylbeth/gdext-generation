@@ -182,9 +182,9 @@ impl IconsCopyStrategy {
     }
 
     /// Changes the `path_node_rust` field to the one indicated and returns the same struct.
-    /// 
+    ///
     /// # Parameters
-    /// 
+    ///
     /// * `path_node_rust` - Path to the icon copied relative to the *crate folder*.
     ///
     /// # Returns
