@@ -175,7 +175,7 @@ impl IconsCopyStrategy {
     ///
     /// The same [`IconsCopyStrategy`] it was passed to it with `copy_node_rust` set to `true`.
     #[cfg(feature = "find_icons")]
-    pub fn copy_node_rust(mut self) -> Self {
+    pub fn copying_node_rust(mut self) -> Self {
         self.copy_node_rust = true;
 
         self
@@ -190,7 +190,7 @@ impl IconsCopyStrategy {
     /// # Returns
     ///
     /// The same [`IconsCopyStrategy`] it was passed to it with `path_node_rust` set to one passed by parameter.
-    pub fn path_node_rust(mut self, path_node_rust: PathBuf) -> Self {
+    pub fn with_path_node_rust(mut self, path_node_rust: PathBuf) -> Self {
         self.path_node_rust = path_node_rust;
 
         self
@@ -201,7 +201,7 @@ impl IconsCopyStrategy {
     /// # Returns
     ///
     /// The same [`IconsCopyStrategy`] it was passed to it with `copy_node_rust` set to `true`.
-    pub fn copy_all(mut self) -> Self {
+    pub fn copying_all(mut self) -> Self {
         self.copy_all = true;
 
         self
@@ -212,7 +212,7 @@ impl IconsCopyStrategy {
     /// # Returns
     ///
     /// The same [`IconsCopyStrategy`] it was passed to it with `force_copy` set to `true`.
-    pub fn force_copy(mut self) -> Self {
+    pub fn forcing_copy(mut self) -> Self {
         self.force_copy = true;
 
         self
