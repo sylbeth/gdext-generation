@@ -8,7 +8,7 @@ use std::{
 use toml::Table;
 
 use super::GDExtension;
-use crate::{args::IconsConfig, NODES_RUST, NODES_RUST_FILENAMES};
+use crate::{args::icons::IconsConfig, NODES_RUST, NODES_RUST_FILENAMES};
 
 #[cfg(feature = "find_icons")]
 use crate::args::DefaultNodeIcon;

@@ -154,16 +154,16 @@ use std::collections::HashMap;
 use toml_edit::{table as toml_table, value as toml_value, DocumentMut};
 
 #[cfg(feature = "icons")]
-use args::IconsConfig;
+use args::icons::IconsConfig;
 
 pub mod args;
 pub mod features;
 pub mod gdext;
 pub mod prelude {
     #[cfg(feature = "find_icons")]
-    pub use super::args::{DefaultNodeIcon, NodeRust};
+    pub use super::args::icons::{DefaultNodeIcon, NodeRust};
     #[cfg(feature = "icons")]
-    pub use super::args::{IconsConfig, IconsCopyStrategy, IconsDirectories};
+    pub use super::args::icons::{IconsConfig, IconsCopyStrategy, IconsDirectories};
     pub use super::{
         args::{BaseDirectory, EntrySymbol, WindowsABI},
         features::{arch::Architecture, mode::Mode, sys::System, target::Target},
