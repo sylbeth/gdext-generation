@@ -43,9 +43,10 @@ impl BaseDirectory {
 pub const DEFAULT_ENTRY_SYMBOL: &str = "gdext_rust_init";
 
 /// Entry symbol for the [`GDExtension`].
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub enum EntrySymbol {
     /// The default entry symbol to the [`GDExtension`]: [`DEFAULT_ENTRY_SYMBOL`].
+    #[default]
     GodotRustDefault,
     /// A generic entry symbol to the [`GDExtension`] based on the crate name in `snake_case`: "lib{crate_name}_init".
     CrateNameBased,
@@ -68,9 +69,10 @@ impl ToString for EntrySymbol {
 }
 
 /// Env and ABI used to build the `Rust GDExtension` for `Windows`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum WindowsABI {
     /// Microsoft Visual C++ compiler.
+    #[default]
     MSVC,
     /// The `MinGW` compiler (`MSYS2` port of `GCC`).
     MinGW,
@@ -124,7 +126,7 @@ pub enum DefaultNodeIcon {
 }
 
 /// How to copy the files needed for the icons to be displayed.
-#[derive(Debug, Default)]
+#[derive(Default, Debug)]
 #[cfg(feature = "icons")]
 pub struct IconsCopyStrategy {
     /// Whether or not to copy the `NodeRust` file. Available with "find_icons" feature.
