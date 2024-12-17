@@ -1,5 +1,7 @@
 //! Module for the definition of the [`Configuration`] struct for the configuration section of the `.gdextension` file.
 
+use std::default::Default;
+
 use crate::args::EntrySymbol;
 
 #[allow(unused_imports)]
@@ -94,17 +96,103 @@ impl Configuration {
             android_aar_plugin,
         }
     }
+
+    /// Creates a new instance of [`Configuration`], by using a specified [`EntrySymbol`].
+    ///
+    /// # Parameters
+    ///
+    /// * `entry_symbol` - [`EntrySymbol`] for initializing the [`GDExtension`]. It uses its `to_string` method to provide its representation.
+    ///
+    /// # Returns
+    ///
+    /// The [`Configuration`] with the `entry_symbol` field properly parsed.
+    pub fn from_entry_symbol(entry_symbol: EntrySymbol) -> Self {
+        return Configuration {
+            entry_symbol: entry_symbol.to_string(),
+            ..Default::default()
+        };
+    }
+
+    /// Creates a new instance of [`Configuration`], by using a specified [`String`] as the empty symbol as is.
+    ///
+    /// # Parameters
+    ///
+    /// * `entry_symbol` - Name of the entry function for initializing the [`GDExtension`].
+    ///
+    /// # Returns
+    ///
+    /// The [`Configuration`] with the `entry_symbol` field properly parsed.
+    pub fn from_raw_entry_symbol(entry_symbol: String) -> Self {
+        return Configuration {
+            entry_symbol,
+            ..Default::default()
+        };
+    }
+
+    /// Sets the `compatibility_minimum` of the [`Configuration`] to the one passed as parameter properly parsed and returns it.
+    ///
+    /// # Parameters
+    ///
+    /// * `compatibility_minimum` - Minimum compatible version of `Godot`, with format `(major, minor)`.
+    pub fn with_compatibility_minimum(mut self, compatibility_minimum: (u8, u8)) -> Self {
+        let (major, minor) = compatibility_minimum;
+        self.compatibility_minimum = Some(major as f64 + (minor as f64 / 10.0));
+        return self;
+    }
+
+    /// Sets the `compatibility_minimum` of the [`Configuration`] to the one passed as parameter and returns it.
+    ///
+    /// # Parameters
+    ///
+    /// * `compatibility_minimum` - Minimum compatible version of `Godot`, with format `major.minor`.
+    pub fn with_raw_compatibility_minimum(mut self, compatibility_minimum: f64) -> Self {
+        self.compatibility_minimum = Some(compatibility_minimum);
+        return self;
+    }
+
+    /// Sets the `compatibility_maximum` of the [`Configuration`] to the one passed as parameter properly parsed and returns it.
+    ///
+    /// # Parameters
+    ///
+    /// * `compatibility_maximum` - Maximum compatible version of `Godot`, with format `(major, minor)`.
+    pub fn with_compatibility_maximum(mut self, compatibility_maximum: (u8, u8)) -> Self {
+        let (major, minor) = compatibility_maximum;
+        self.compatibility_maximum = Some(major as f64 + (minor as f64 / 10.0));
+        return self;
+    }
+
+    /// Sets the `compatibility_maximum` of the [`Configuration`] to the one passed as parameter and returns it.
+    ///
+    /// # Parameters
+    ///
+    /// * `compatibility_maximum` - Maximum compatible version of `Godot`, with format `major.minor`.
+    pub fn with_raw_compatibility_maximum(mut self, compatibility_maximum: f64) -> Self {
+        self.compatibility_maximum = Some(compatibility_maximum);
+        return self;
+    }
+
+    /// Sets the `reloadable` of the [`Configuration`] to true and returns it.
+    pub fn reloadable(mut self) -> Self {
+        self.reloadable = Some(true);
+        self
+    }
+
+    /// Sets the `android_aar_plugin` of the [`Configuration`] to true and returns it.
+    pub fn android_aar_plugin(mut self) -> Self {
+        self.android_aar_plugin = Some(true);
+        self
+    }
 }
 
 impl Default for Configuration {
-    /// The [`Configuration`] found in the `godot-rust` book.
+    /// The [`Configuration`] with the entry symbol found in the `godot-rust` book.
     fn default() -> Self {
-        Configuration::new(
-            EntrySymbol::GodotRustDefault,
-            Some((4, 1)),
-            None,
-            true,
-            false,
-        )
+        Configuration {
+            entry_symbol: EntrySymbol::GodotRustDefault.to_string(),
+            compatibility_minimum: None,
+            compatibility_maximum: None,
+            reloadable: None,
+            android_aar_plugin: None,
+        }
     }
 }
