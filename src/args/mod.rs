@@ -65,30 +65,3 @@ impl ToString for EntrySymbol {
         }
     }
 }
-
-/// Env and ABI used to build the `Rust GDExtension` for `Windows`.
-#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum WindowsABI {
-    /// Microsoft Visual C++ compiler.
-    #[default]
-    MSVC,
-    /// The `MinGW` compiler (`MSYS2` port of `GCC`).
-    MinGW,
-    /// Similar to `MinGW` but using `UCRT` as the runtime and various `LLVM` tools/libraries instead of `GCC/Binutils`. More information: <https://doc.rust-lang.org/rustc/platform-support/pc-windows-gnullvm.html>
-    LLVM,
-}
-
-impl WindowsABI {
-    /// Gets the name of the [`WindowsABI`] used in `Rust` target triples.
-    ///
-    /// # Returns
-    ///
-    /// The name of the [`WindowsABI`] for the `Rust` target triple.
-    pub fn get_rust_name(&self) -> &'static str {
-        match self {
-            Self::MSVC => "msvc",
-            Self::MinGW => "gnu",
-            Self::LLVM => "gnullvm",
-        }
-    }
-}

@@ -5,8 +5,13 @@ use std::path::{Path, PathBuf};
 
 use super::GDExtension;
 use crate::{
-    args::{BaseDirectory, WindowsABI},
-    features::{arch::Architecture, mode::Mode, sys::System, target::Target},
+    args::BaseDirectory,
+    features::{
+        arch::Architecture,
+        mode::Mode,
+        sys::{System, WindowsABI},
+        target::Target,
+    },
 };
 
 impl GDExtension {

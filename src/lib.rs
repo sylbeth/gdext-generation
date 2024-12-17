@@ -143,7 +143,8 @@ use std::{
     path::PathBuf,
 };
 
-use args::{BaseDirectory, EntrySymbol, WindowsABI};
+use args::{BaseDirectory, EntrySymbol};
+use features::sys::WindowsABI;
 use gdext::{config::Configuration, GDExtension};
 
 #[cfg(feature = "dependencies")]
@@ -165,8 +166,13 @@ pub mod prelude {
     #[cfg(feature = "icons")]
     pub use super::args::icons::{IconsConfig, IconsCopyStrategy, IconsDirectories};
     pub use super::{
-        args::{BaseDirectory, EntrySymbol, WindowsABI},
-        features::{arch::Architecture, mode::Mode, sys::System, target::Target},
+        args::{BaseDirectory, EntrySymbol},
+        features::{
+            arch::Architecture,
+            mode::Mode,
+            sys::{System, WindowsABI},
+            target::Target,
+        },
         gdext::config::Configuration,
         generate_gdextension_file,
     };
