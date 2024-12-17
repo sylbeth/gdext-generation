@@ -95,3 +95,16 @@ impl Configuration {
         }
     }
 }
+
+impl Default for Configuration {
+    /// The [`Configuration`] found in the `godot-rust` book.
+    fn default() -> Self {
+        Configuration::new(
+            EntrySymbol::GodotRustDefault,
+            Some((4, 1)),
+            None,
+            true,
+            false,
+        )
+    }
+}

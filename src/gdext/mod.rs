@@ -13,7 +13,7 @@ use toml::Table;
 use self::config::Configuration;
 
 /// `.gdextension` file representation.
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Default, Deserialize, Serialize, Debug)]
 pub struct GDExtension {
     /// Configuration section of the `.gdextension` file.
     configuration: Configuration,
