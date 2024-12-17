@@ -260,7 +260,7 @@ impl IconsDirectories {
     ///
     /// # Returns
     ///
-    /// The [`IconsDirectories`] instancte with its fields initialized.
+    /// The [`IconsDirectories`] instance with its fields initialized.
     pub fn new(
         base_directory: PathBuf,
         editor_directory: PathBuf,
@@ -273,6 +273,93 @@ impl IconsDirectories {
             custom_directory,
             relative_directory,
         }
+    }
+
+    /// Creates a new instance of [`IconsDirectories`], by giving it the necessary [`PathBuf`] fields. It assumes the default as the base these folders are relative to, [`BaseDirectory::ProjectFolder`].
+    ///
+    /// # Parameters
+    ///
+    /// * `base_directory` - The path to the folder **relative** to `{relative_dir.as_str()}` where all the icons are stored. Defaults to the "addons" folder.
+    /// * `editor_directory` - The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the editor icons are stored. Defaults to the "editor" folder inside addons.
+    /// * `custom_directory` - The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the custom icons for this library are stored. Defaults to "", so the same as the base directory.
+    ///
+    /// # Returns
+    ///
+    /// The [`IconsDirectories`] instance with its fields initialized.
+    pub fn from_directories(
+        base_directory: PathBuf,
+        editor_directory: PathBuf,
+        custom_directory: PathBuf,
+    ) -> Self {
+        Self {
+            base_directory,
+            editor_directory,
+            custom_directory,
+            relative_directory: None,
+        }
+    }
+
+    /// Modifies the instance of [`IconsDirectories`], by giving it the necessary [`PathBuf`] fields.
+    ///
+    /// # Parameters
+    ///
+    /// * `base_directory` - The path to the folder **relative** to `{relative_dir.as_str()}` where all the icons are stored. Defaults to the "addons" folder.
+    /// * `editor_directory` - The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the editor icons are stored. Defaults to the "editor" folder inside addons.
+    /// * `custom_directory` - The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the custom icons for this library are stored. Defaults to "", so the same as the base directory.
+    ///
+    /// # Returns
+    ///
+    /// The [`IconsDirectories`] instance with its directories changed.
+    pub fn with_directories(
+        mut self,
+        base_directory: PathBuf,
+        editor_directory: PathBuf,
+        custom_directory: PathBuf,
+    ) -> Self {
+        self.base_directory = base_directory;
+        self.editor_directory = editor_directory;
+        self.custom_directory = custom_directory;
+        self
+    }
+
+    /// Modifies the instance of [`IconsDirectories`], by giving it the `base_directory` field.
+    ///
+    /// # Parameters
+    ///
+    /// * `base_directory` - The path to the folder **relative** to `{relative_dir.as_str()}` where all the icons are stored. Defaults to the "addons" folder.
+    pub fn with_base_directory(mut self, base_directory: PathBuf) -> Self {
+        self.base_directory = base_directory;
+        self
+    }
+
+    /// Modifies the instance of [`IconsDirectories`], by giving it the `editor_directory` field.
+    ///
+    /// # Parameters
+    ///
+    /// * `editor_directory` - The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the editor icons are stored. Defaults to the "editor" folder inside addons.
+    pub fn with_editor_directory(mut self, editor_directory: PathBuf) -> Self {
+        self.editor_directory = editor_directory;
+        self
+    }
+
+    /// Modifies the instance of [`IconsDirectories`], by giving it the `custom_directory` field.
+    ///
+    /// # Parameters
+    ///
+    /// * `custom_directory` - The path to the folder **relative** to `{relative_dir.as_str()}{base_directory}` where all the custom icons for this library are stored. Defaults to "", so the same as the base directory.
+    pub fn with_custom_directory(mut self, custom_directory: PathBuf) -> Self {
+        self.custom_directory = custom_directory;
+        self
+    }
+
+    /// Modifies the instance of [`IconsDirectories`], by giving it the `relative_directory` field.
+    ///
+    /// # Parameters
+    ///
+    /// * `relative_directory` - The folder to use as a base for the base directory of icons.
+    pub fn with_relative_directory(mut self, relative_directory: BaseDirectory) -> Self {
+        self.relative_directory = Some(relative_directory);
+        self
     }
 }
 
