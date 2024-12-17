@@ -171,14 +171,14 @@ impl Configuration {
         return self;
     }
 
-    /// Sets the `reloadable` of the [`Configuration`] to true and returns it.
-    pub fn reloadable(mut self) -> Self {
+    /// Changes the [`Configuration`] to allow the reloading of the [`GDExtension`] upon recompilation.
+    pub fn with_reloadability(mut self) -> Self {
         self.reloadable = Some(true);
         self
     }
 
-    /// Sets the `android_aar_plugin` of the [`Configuration`] to true and returns it.
-    pub fn android_aar_plugin(mut self) -> Self {
+    /// Changes the [`Configuration`] so the [`GDExtension`] native shared libraries are exported by the `Android` plugin `AAR` binaries and returns it.
+    pub fn with_android_aar_plugin(mut self) -> Self {
         self.android_aar_plugin = Some(true);
         self
     }
