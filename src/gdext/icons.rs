@@ -219,9 +219,9 @@ fn find_children(base_class_to_nodes: &mut HashMap<String, Vec<String>>) -> Resu
                 };
                 // Eliminate the , or ).
                 base_class.pop();
-                let base_class_trimmed = base_class.trim();
-                if !base_class_to_nodes.contains_key(base_class_trimmed) {
-                    base_class_to_nodes.insert(base_class_trimmed.to_owned(), Vec::new());
+                base_class = base_class.trim().to_owned();
+                if !base_class_to_nodes.contains_key(&base_class) {
+                    base_class_to_nodes.insert(base_class.clone(), Vec::new());
                 }
                 found_base = true;
             } else if found_base & !line.starts_with("///") & line.contains("struct") {
