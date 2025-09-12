@@ -239,11 +239,11 @@ fn find_children(base_class_to_nodes: &mut HashMap<String, Vec<String>>) -> Resu
                 };
                 // Eliminate the ;, { or <.
                 struct_class.pop();
-                let struct_class_trimmed = struct_class.trim();
+                struct_class = struct_class.trim().to_owned();
                 base_class_to_nodes
                     .get_mut(&base_class)
                     .expect("The map doesn't contain the key that was just pushed to it.")
-                    .push(struct_class_trimmed.into());
+                    .push(struct_class);
                 found_base = false;
             }
         }
