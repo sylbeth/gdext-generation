@@ -25,6 +25,7 @@ regex = { version = "1.11.1", optional = true }
 default = ["checked_generation", "icons"]
 icons = []
 find_icons = ["icons", "dep:glob", "dep:regex"]
+complex_find = ["find_icons"]
 dependencies = ["dep:toml_edit"]
 checked_generation = []
 forced_generation = []

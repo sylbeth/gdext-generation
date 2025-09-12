@@ -191,10 +191,17 @@ impl GDExtension {
 #[cfg(feature = "find_icons")]
 fn find_children(base_class_to_nodes: &mut HashMap<String, Vec<String>>) -> Result<()> {
     // Only works if base = BaseClass contains no comments in between.
-    let base_class_regex =
-        Regex::new(r"base\s*\=\s*[\w_\d]+\s*[),]").expect("Invalid regex pattern.");
+    let base_class_regex = if cfg!(feature = "complex_find") {
+        Regex::new(r"base(\s|(\/\/.*?[\r\n])|(\/\*.*?\*\/))*\=(\s|(\/\/.*?[\r\n])|(\/\*.*?\*\/))*[\w_\d]+(\s|(\/\/.*?[\r\n])|(\/\*.*?\*\/))*[),]")
+    } else {
+        Regex::new(r"base\s*\=\s*[\w_\d]+\s*[),]")
+    }.expect("Invalid regex pattern.");
     // Only works if struct StructName contains no comments in between.
-    let struct_regex = Regex::new(r"struct\s*[\w_\d]+\s*[{;<]").expect("Invalid regex pattern.");
+    let struct_regex = if cfg!(feature = "complex_find") {
+        Regex::new(r"struct(\s|(\/\/.*?[\r\n])|(\/\*.*?\*\/))*[\w_\d]+(\s|(\/\/.*?[\r\n])|(\/\*.*?\*\/))*[{;<]")
+    } else {
+        Regex::new(r"struct\s*[\w_\d]+\s*[{;<]")
+    }.expect("Invalid regex pattern.");
 
     let mut base_class = String::new();
     let mut struct_class;
