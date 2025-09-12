@@ -11,7 +11,7 @@ use super::GDExtension;
 use crate::{args::icons::IconsConfig, NODES_RUST, NODES_RUST_FILENAMES};
 
 #[cfg(feature = "find_icons")]
-use crate::args::DefaultNodeIcon;
+use crate::args::icons::DefaultNodeIcon;
 #[cfg(feature = "find_icons")]
 use glob::glob;
 #[cfg(feature = "find_icons")]
