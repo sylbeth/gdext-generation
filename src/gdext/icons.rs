@@ -5,7 +5,7 @@ use std::{
     io::{Result, Write},
 };
 
-use toml::Table;
+use toml::{map::Map, Table};
 
 use super::GDExtension;
 use crate::{args::icons::IconsConfig, NODES_RUST, NODES_RUST_FILENAMES};
@@ -172,7 +172,11 @@ impl GDExtension {
             }
         }
 
-        self.icons = Some(icons);
+        self.icons = Some({
+            let mut sort = icons.into_iter().collect::<Vec<_>>();
+            sort.sort_by(|(a, _), (b, _)| a.cmp(b));
+            Map::from_iter(sort)
+        });
 
         Ok(self)
     }
